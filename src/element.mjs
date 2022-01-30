@@ -255,7 +255,8 @@ class ErebusElement {
 	show() {
 		this.each(element => {
 			const computedDisplay = getComputedStyle(element).getPropertyValue('display');
-			if(computedDisplay && computedDisplay === 'none') {
+			console.log('computedDisplay=' + computedDisplay);
+			if(!computedDisplay || computedDisplay === 'none') {
 				if(element.originalDisplay) {
 					element.style.display = element.originalDisplay;
 					delete element.originalDisplay;

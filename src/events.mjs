@@ -3,7 +3,7 @@
  * @param callback Function to be executed when the document ready is reached
  */
 function onReady(callback) {
-	if (document.readyState === 'complete') {
+	if (document.readyState !== 'loading') {
 		callback();
 	} else if (typeof (document.addEventListener) === 'function') {
 		document.addEventListener('DOMContentLoaded', callback, false);
