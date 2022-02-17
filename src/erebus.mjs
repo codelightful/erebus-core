@@ -5,5 +5,7 @@ import random from './random.mjs';
 import events from './events.mjs';
 import handler from './handler.mjs';
 import element from './element.mjs';
+import http from './http.mjs';
+import i18n from './i18n.mjs';
 
-export default { utils, random, events, handler, element };
+export default { utils, random, events, handler, element, http, i18n };
