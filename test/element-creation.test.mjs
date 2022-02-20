@@ -56,4 +56,10 @@ describe('Erebus.element - Creation', function() {
 		const element = Erebus.element(document.body);
 		assert.ok(element);
 	});
+
+	it('Body should be a singleton', function() {
+		const one = Erebus.element(document.body);
+		const two = Erebus.element('body');
+		assert.ok(one === two);
+	});
 });

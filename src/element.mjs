@@ -1,3 +1,5 @@
+const $scope = {};
+
 /**
  * Parses a string HTML content and returns its content or null if it is not HTML content
  * @param {string} content HTML content to parse
@@ -51,13 +53,16 @@ function getElement(source) {
 		return null;
 	} else if (source instanceof ErebusElement) {
 		return source;
+	} else if (source === 'body' || source === document.body) {
+		if(!$scope.body) {
+			$scope.body = new ErebusElement(document.body);
+		}
+		return $scope.body;
 	} else if (source instanceof HTMLElement) {
 		return new ErebusElement(source);
 	} else if (typeof (source) === 'string') {
 		var nativeSource;
-		if (source === 'body') {
-			nativeSource = document.body;
-		} else if (source.startsWith('<') && source.endsWith('>')) {
+		if (source.startsWith('<') && source.endsWith('>')) {
 			nativeSource = parseHTML(source);
 		} else if (source.startsWith('#')) {
 			nativeSource = document.getElementById(source.substring(1));
