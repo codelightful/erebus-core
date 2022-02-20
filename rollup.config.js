@@ -7,7 +7,7 @@ export default {
     input: 'src/erebus.mjs',
     output: {
         file: './dist/erebus-core.min.js',
-        format: 'iife',
+        format: 'umd',
         name: 'Erebus',
         sourcemap: true,
         plugins: [
