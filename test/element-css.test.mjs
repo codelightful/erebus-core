@@ -98,4 +98,12 @@ describe('Erebus.element - CSS Methods', function() {
 		element.removeClass('erb-one', 'erb-two');
 		assert.strictEqual(htmlElement.className, 'erb-one-and-half erb-two-and-half');
 	});
+
+	it('Set className', function() {
+		const htmlElement = document.createElement('div');
+		htmlElement.className = 'erb-one';
+		const element = Erebus.element(htmlElement);
+		element.className = 'erb-two';
+		assert.strictEqual(htmlElement.className, 'erb-two');
+	});
 });

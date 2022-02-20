@@ -11,7 +11,8 @@
     "build": "rollup -c",
     "test": "mocha",
     "coverage": "c8 mocha",
-    "lint": "eslint ./src/**/**.mjs"
+    "lint": "eslint ./src/**/**.mjs",
+	"validate": "npm-run-all lint test build"
   },
   "keywords": [
     "ui"

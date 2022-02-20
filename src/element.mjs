@@ -329,6 +329,14 @@ class ErebusElement {
 		});
 		return this;
 	}
+
+	/** Set the CSS class name for the HTMLElements wrapped by the current instance */
+	set className(value) {
+		value = utils.trim(value);
+		this.each(element => {
+			element.className = value;
+		});
+	}
 }
 
 export default getElement;
