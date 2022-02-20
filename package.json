@@ -1,6 +1,6 @@
 {
   "name": "erebus-core",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Base web library",
   "repository": "https://github.com/codelightful/erebus-core",
   "main": "./src/erebus.mjs",

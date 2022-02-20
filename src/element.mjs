@@ -1,3 +1,5 @@
+import utils from './utils.mjs';
+
 const $scope = {};
 
 /**
@@ -37,7 +39,7 @@ function cloneHTMLElement(sourceElement) {
 		return null;
 	}
 	const clonedElement = sourceElement.cloneNode(true);
-	if(clonedElement.nodeType === 1) {
+	if (clonedElement.nodeType === 1) {
 		clonedElement.removeAttribute('id'); // the element identifier should not be cloned
 	}
 	return clonedElement;
@@ -54,7 +56,7 @@ function getElement(source) {
 	} else if (source instanceof ErebusElement) {
 		return source;
 	} else if (source === 'body' || source === document.body) {
-		if(!$scope.body) {
+		if (!$scope.body) {
 			$scope.body = new ErebusElement(document.body);
 		}
 		return $scope.body;
@@ -222,9 +224,9 @@ class ErebusElement {
 
 	/** Adds a listener to the current instance and its wrapped elements */
 	addEventListener(eventName, listener) {
-		if(!eventName) {
+		if (!eventName) {
 			throw Error('erebus.element.add_listener.null_event_name');
-		} else if(typeof(listener) === 'function') {
+		} else if (typeof (listener) === 'function') {
 			this.each(element => {
 				if (typeof (element.addEventListener) === 'function') {
 					element.addEventListener(eventName, listener, false);
@@ -243,13 +245,13 @@ class ErebusElement {
 
 	/** Hides the wrapped elements to make it invisible */
 	hide() {
-		if(this.#hidden) {
+		if (this.#hidden) {
 			return;
 		}
 		this.#hidden = true;
 		this.each(element => {
 			const computedDisplay = getComputedStyle(element).getPropertyValue('display');
-			if(computedDisplay && computedDisplay !== 'none') {
+			if (computedDisplay && computedDisplay !== 'none') {
 				element.originalDisplay = computedDisplay;
 			}
 			element.style.display = 'none';
@@ -261,8 +263,8 @@ class ErebusElement {
 		this.each(element => {
 			const computedDisplay = getComputedStyle(element).getPropertyValue('display');
 			console.log('computedDisplay=' + computedDisplay);
-			if(!computedDisplay || computedDisplay === 'none') {
-				if(element.originalDisplay) {
+			if (!computedDisplay || computedDisplay === 'none') {
+				if (element.originalDisplay) {
 					element.style.display = element.originalDisplay;
 					delete element.originalDisplay;
 				} else {
@@ -279,6 +281,53 @@ class ErebusElement {
 			clonedWrapped.push(cloneHTMLElement(element));
 		});
 		return new ErebusElement(clonedWrapped);
+	}
+
+	/** Adds a new CSS class to the HTMLElements wrapped by the current instance */
+	addClass(...classes) {
+		if (!classes || classes.length === 0) {
+			return this;
+		}
+		this.each(element => {
+			for (var cdx = 0; cdx < classes.length; cdx++) {
+				const className = utils.trim(classes[cdx]);
+				if (!className || typeof (className) !== 'string') {
+					continue;
+				}
+				if (!element.className) {
+					element.className = className;
+				} else {
+					const regex = new RegExp('(^|\\s)(' + className + ')($|\\s)', 'g');
+					if (!regex.test(element.className)) {
+						element.className += ' ' + className;
+					}
+				}
+			}
+		});
+		return this;
+	}
+
+	/** Adds a new CSS class to the HTMLElements wrapped by the current instance */
+	removeClass(...classes) {
+		if (!classes || classes.length === 0) {
+			return this;
+		}
+		this.each(element => {
+			if (!element.className) {
+				return;
+			}
+			for (var cdx = 0; cdx < classes.length; cdx++) {
+				const className = utils.trim(classes[cdx]);
+				if (!className || typeof (className) !== 'string') {
+					continue;
+				}
+				const regex = new RegExp('(^|\\s)(' + className + ')($|\\s)', 'g');
+				if (regex.test(element.className)) {
+					element.className = element.className.replace(regex, '');
+				}
+			}
+		});
+		return this;
 	}
 }
 
