@@ -1,6 +1,6 @@
 {
   "name": "erebus-core",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Base web library",
   "repository": "https://github.com/codelightful/erebus-core",
   "main": "./src/erebus.mjs",
@@ -12,7 +12,7 @@
     "test": "mocha",
     "coverage": "c8 mocha",
     "lint": "eslint ./src/**/**.mjs",
-	"validate": "npm-run-all lint test build"
+    "prepare": "npm-run-all lint test build"
   },
   "keywords": [
     "ui"

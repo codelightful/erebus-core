@@ -260,9 +260,9 @@ class ErebusElement {
 
 	/** Shows the wrapped elements to make it visible */
 	show() {
+		this.#hidden = false;
 		this.each(element => {
 			const computedDisplay = getComputedStyle(element).getPropertyValue('display');
-			console.log('computedDisplay=' + computedDisplay);
 			if (!computedDisplay || computedDisplay === 'none') {
 				if (element.originalDisplay) {
 					element.style.display = element.originalDisplay;
