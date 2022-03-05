@@ -222,20 +222,35 @@ class ErebusElement {
 		return this;
 	}
 
-	/** Adds a listener to the current instance and its wrapped elements */
-	addEventListener(eventName, listener) {
+	/**
+	 * Adds a listener to the current instance and its wrapped elements
+	 * @param {string} eventName Name of the event. For example click.
+	 * @param {function} listener Function to invoke when the event is triggered
+	 * @param {object} options Optional object with the options to set the listener (see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener)
+	 * @returns Current element instance to write fluid expressions
+	 */
+	addEventListener(eventName, listener, options) {
 		if (!eventName) {
 			throw Error('erebus.element.add_listener.null_event_name');
 		} else if (typeof (listener) === 'function') {
+			if(options === undefined) {
+				options = { capture: false };
+			}
 			this.each(element => {
-				if (typeof (element.addEventListener) === 'function') {
-					element.addEventListener(eventName, listener, false);
-				} else if (typeof (element.attachEvent) === 'function') {
-					element.attachEvent('on' + eventName, listener);
-				}
+				element.addEventListener(eventName, listener, options);
 			});
 		}
 		return this;
+	}
+
+	/**
+	 * Adds a single execution listener to the current instance and its wrapped elements
+	 * @param {string} eventName Name of the event. For example click.
+	 * @param {function} listener Function to invoke when the event is triggered
+	 * @returns Current element instance to write fluid expressions
+	 */
+	once(eventName, listener) {
+		return addEventListener(eventName, listener, { capture: false, once: true });
 	}
 
 	/** Allows to determine if the element is hidden or not */

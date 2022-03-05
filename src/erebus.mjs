@@ -1,5 +1,5 @@
 'use strict';
-console.log('Erebus Core v0.0.8');
+console.log('Erebus Core v0.0.9');
 import utils from './utils.mjs';
 import random from './random.mjs';
 import events from './events.mjs';
