@@ -123,6 +123,15 @@ class ErebusElement {
 		});
 	}
 
+	/** Remove all the content from the current instance */
+	clear() {
+		this.each((element) => {
+			element.innerHTML = '';
+			removeAllChild(element);
+		});
+		return this;
+	}
+
 	/**
 	 * Sets the content inside the wrapped elements.  This method is preferred over innerHTML
 	 * since it cleans the event listener associated with the child nodes.
@@ -135,6 +144,7 @@ class ErebusElement {
 			if (typeof (value) === 'string') {
 				element.innerHTML = value;
 			} else if (value instanceof HTMLElement) {
+				element.innerHTML = '';
 				removeAllChild(element);
 				if (index === 0) {
 					element.appendChild(value);
@@ -142,6 +152,7 @@ class ErebusElement {
 					element.appendChild(cloneHTMLElement(value));
 				}
 			} else if (value instanceof ErebusElement) {
+				element.innerHTML = '';
 				removeAllChild(element);
 				if (index === 0) {
 					value.setParentNode(element);
@@ -233,7 +244,7 @@ class ErebusElement {
 		if (!eventName) {
 			throw Error('erebus.element.add_listener.null_event_name');
 		} else if (typeof (listener) === 'function') {
-			if(options === undefined) {
+			if (options === undefined) {
 				options = { capture: false };
 			}
 			this.each(element => {
@@ -250,7 +261,7 @@ class ErebusElement {
 	 * @returns Current element instance to write fluid expressions
 	 */
 	once(eventName, listener) {
-		return addEventListener(eventName, listener, { capture: false, once: true });
+		return this.addEventListener(eventName, listener, { capture: false, once: true });
 	}
 
 	/** Allows to determine if the element is hidden or not */
