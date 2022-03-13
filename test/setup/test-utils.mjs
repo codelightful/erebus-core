@@ -4,6 +4,9 @@ originalConsole.debug = console.debug;
 originalConsole.warn = console.warn;
 originalConsole.error = console.error;
 
+const entries = [];
+
+/** Internal method to collect the console entries */
 function collectConsole(type, message, ...params) {
 	if(!message) {
 		return;
@@ -37,7 +40,6 @@ function collectError(message, ...params) {
  * @returns Function wrapping the console mocking/unmocking
  */
 export function runWithMockedConsole(testImpl) {
-	const entries = [];
 	console.log = collectLog;
 	console.debug = collectDebug;
 	console.warn = collectWarn;
