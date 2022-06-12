@@ -173,7 +173,9 @@ class ErebusElement {
 	setParentNode(parent) {
 		if (!parent) {
 			this.each(element => {
-				element.parentNode.removeChild(element);
+				if(element.parentNode) {
+					element.parentNode.removeChild(element);
+				}
 			});
 			return this;
 		} else if (typeof (parent) === 'string') {

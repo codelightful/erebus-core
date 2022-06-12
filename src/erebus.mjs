@@ -1,5 +1,5 @@
 'use strict';
-console.log('Erebus Core v0.0.11');
+console.log('Erebus Core v0.0.12');
 
 import utils from './utils.mjs';
 import cookies from './cookies.mjs';

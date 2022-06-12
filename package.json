@@ -1,6 +1,6 @@
 {
   "name": "erebus-core",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Base web library",
   "repository": "https://github.com/codelightful/erebus-core",
   "browser": "./dist/erebus-core.min.js",
@@ -41,6 +41,5 @@
     "rollup-plugin-terser": "^7.0.2",
     "sinon": "^11.1.2",
     "xhr-mock": "^2.5.1"
-  },
-  "dependencies": {}
+  }
 }
