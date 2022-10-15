@@ -1,0 +1,39 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- main
+
+pool: Default
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '16.x'
+    checkLatest: true
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install
+    npm run lint
+    npm run build
+  displayName: 'Build'
+
+- script: |
+    npm run coverage
+  displayName: 'Test'
+
+- task: UseDotNet@2
+  inputs:
+    packageType: 'runtime'
+    version: '6.x'
+
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: 'Cobertura'
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
+    pathToSources: '$(System.DefaultWorkingDirectory)/src'
+    reportDirectory: '$(System.DefaultWorkingDirectory)/coverage'
+    failIfCoverageEmpty: true
