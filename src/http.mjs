@@ -40,7 +40,7 @@ function getResponseHeaders(request) {
 			// NOTE: on older browsers the header name can have mixed case, on recent browsers it is only lowercase
 			const headerName = utils.trim(parts[0]).toLowerCase();
 			const headerValue = utils.trim(parts[1]);
-			if(headerName && headerValue) {
+			if (headerName && headerValue) {
 				headers[headerName] = headerValue;
 			}
 		}
@@ -82,7 +82,7 @@ function getResponseParser(headers) {
 }
 
 /**
- * 
+ *
  * @param url String with the resource URL to be requested
  * @param options Object with the options to execute the request. The values are:
  * 					- method: String with the HTTP method to execute: GET, POST, PUT, DELETE. If this is not provided, GET will be used by default.
@@ -116,14 +116,14 @@ function executeRequest(method, url, options) {
 					if (parser) {
 						try {
 							response = parser(response);
-						} catch(ex) {
+						} catch (ex) {
 							reject(ex);
 							return;
 						}
 					}
 					if (typeof (options.interceptor) === 'function') {
 						const result = options.interceptor(response, headers);
-						if(result !== undefined) {
+						if (result !== undefined) {
 							response = result;
 						}
 					}

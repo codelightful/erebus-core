@@ -64,7 +64,7 @@ function setResourceBundle(resource, langCode) {
 		});
 	}
 	const target = $scope.resources[langCode];
-	if(!target) {
+	if (!target) {
 		$scope.resources[langCode] = resource;
 	} else {
 		Object.assign(target, resource);

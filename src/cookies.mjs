@@ -31,7 +31,7 @@ $module.get = function (name) {
 		return null;
 	}
 	var cookiestring = RegExp(name + '=[^;]+').exec(document.cookie);
-	if(cookiestring) {
+	if (cookiestring) {
 		return decodeURIComponent(cookiestring.toString().replace(/^[^=]+./, ''));
 	}
 	return '';

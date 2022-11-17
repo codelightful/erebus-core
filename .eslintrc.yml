@@ -17,6 +17,38 @@ rules:
   semi:
     - error
     - always
+  curly:
+    - error
+  no-self-assign:
+    - error
+  no-unused-vars:
+    - error
+  no-eval:
+    - error
+  no-lonely-if:
+    - error
+  no-unneeded-ternary:
+    - error
+  no-useless-return:
+    - error
+  require-await:
+    - error
+  comma-style:
+    - error
+    - last
+  comma-spacing:
+    - error
+    - before: false 
+      after: true
+  no-trailing-spaces:
+    - error
+  template-tag-spacing:
+    - error
+    - always
+  keyword-spacing:
+    - error
+    - before: true
+      after: true
 globals:
   'Apice': true
   'ActiveXObject': true

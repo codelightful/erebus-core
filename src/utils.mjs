@@ -14,7 +14,7 @@ $module.isPromise = function(value) {
 
 /** Trims a string by removing leading and trailing white spaces  */
 $module.trim = function (value) {
-	if(typeof(value) !== 'string') {
+	if (typeof(value) !== 'string') {
 		return value;
 	}
 	return value.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
