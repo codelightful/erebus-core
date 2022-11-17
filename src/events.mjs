@@ -1,47 +1,59 @@
-import handler from './handler.mjs';
+const $module = {};
 
 /**
  * Allows to register a callback to be executed when the document ready state has been reached
- * @param callback Function to be executed when the document ready is reached
+ * @returns Promise to be fulfilled once the document is ready
  */
-function onReady(callback) {
+$module.documentReady = function() {
 	if (document.readyState !== 'loading') {
-		callback();
-	} else if (typeof (document.addEventListener) === 'function') {
-		document.addEventListener('DOMContentLoaded', callback, false);
-	} else if (typeof (document.attachEvent) === 'function') {
-		document.attachEvent('onreadystatechange', function () {
-			if (document.readyState === 'complete') {
-				callback();
-			}
+		return Promise.resolve();
+	}
+	if (typeof (document.addEventListener) === 'function') {
+		return new Promise(function(resolve) {
+			document.addEventListener('DOMContentLoaded', resolve, false);
 		});
 	}
-}
+	if (typeof (document.attachEvent) === 'function') {
+		return new Promise(function(resolve) {
+			document.attachEvent('onreadystatechange', function () {
+				if (document.readyState === 'complete') {
+					resolve();
+				}
+			});
+		});
+	}
+	console.log('The current browser event management is not supported by the Erebus framework');
+	return Promise.reject('erebus.events.unsuported_browser');
+};
 
 /**
  * Internal method to assign an animation class to an element and invoke a callback when is completed
  * @param target Reference to the HTMLElement (or ErebusElement) to animate
  * @param animationClass String with the CSS animation name to apply
- * @param callback Function to invoked when the animation is completed 
  */
-function waitAnimation(target, animationClass, callback) {
+$module.animate = function(target, animationClass) {
 	if (!target) {
-		throw new Error('erebus.events.wait_animation.invalid_target');
+		return Promise.reject(Error('erebus.events.wait_animation.invalid_target'));
 	} else if (!animationClass) {
-		throw new Error('erebus.events.wait_animation.invalid_animation');
-	} else if (typeof (callback) !== 'function') {
-		throw new Error('erebus.events.wait_animation.invalid_callback');
+		return Promise.reject(Error('erebus.events.wait_animation.invalid_animation'));
 	}
-	target.addEventListener('animationend', function () {
-		handler.trigger(callback);
-	}, { capture: false, once: true });
-	if (target.className === '') {
-		target.className = animationClass;
-	} else if (typeof (target.addClass) === 'function') {
-		target.addClass(animationClass);
-	} else {
-		target.className += ' ' + animationClass;
-	}
-}
+	return new Promise(function(resolve) {
+		// registers the event handler
+		target.addEventListener('animationend', function () {
+			resolve();
+		}, { capture: false, once: true });
 
-export default { onReady, waitAnimation };
+		// implements the animation
+		if (target.className === '') {
+			target.className = animationClass;
+		} else if (target.classList) {
+			target.classList.add(animationClass);
+		} else if (typeof (target.addClass) === 'function') {
+			target.addClass(animationClass);
+		} else {
+			target.className += ' ' + animationClass;
+		}
+	});
+};
+
+export default $module;

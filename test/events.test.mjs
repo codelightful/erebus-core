@@ -11,70 +11,58 @@ describe('Events', function() {
 
 	it('Contract', function() {
 		assert.ok(Erebus.events);
-		assert.ok(Erebus.events.onReady);
-		assert.ok(Erebus.events.waitAnimation);
+		assert.ok(Erebus.events.documentReady);
+		assert.ok(Erebus.events.animate);
 	});
 
-	it('onReady', function() {
+	it('documentReady', async function() {
 		document.body.innerHTML = '';
-		Erebus.events.onReady(function() {
-			document.body.innerHTML = 'Ready!';
-		});
+		await Erebus.events.documentReady();
+		document.body.innerHTML = 'Ready!';
 		assert.strictEqual(document.body.innerHTML, 'Ready!');
 	});
 
-	it('waitAnimation without arguments', function() {
-		assert.throws(function() {
-			Erebus.events.waitAnimation();
-		});
+	it('animate without arguments', async function() {
+		assert.rejects(Erebus.events.animate());
 	});
 
-	it('waitAnimation with null target', function() {
-		assert.throws(function() {
-			Erebus.events.waitAnimation(null, 'erb-test', function() {});
-		});
+	it('animate with null target', function() {
+		assert.rejects(Erebus.events.animate(null, 'erb-test'));
 	});
 
-	it('waitAnimation with null animation', function() {
+	it('animate with null animation', function() {
 		const target = document.createElement('div');
-		assert.throws(function() {
-			Erebus.events.waitAnimation(target, null, function() {});
-		});
+		assert.rejects(Erebus.events.animate(target, null));
 	});
 
-	it('waitAnimation with null callback', function() {
+	it('animate with null callback', function() {
 		const target = document.createElement('div');
-		assert.throws(function() {
-			Erebus.events.waitAnimation(target, 'erb-test', null);
-		});
+		assert.rejects(Erebus.events.animate(target, 'erb-test'));
 	});
 
-	it('waitAnimation with plain HTMLElement without className', function() {
+	/*
+	// NOTE: on the simulated phantom browser the animation does not work. We need to research how to trigger it
+	it('animate with plain HTMLElement without className', async function() {
 		const target = document.createElement('div');
 		document.body.appendChild(target);
-		Erebus.events.waitAnimation(target, 'erb-test', function() {
-			// NOTE: on the simulated phantom browser the animation does not work
-		});
+		await Erebus.events.animate(target, 'erb-test');
 		assert.strictEqual(target.className, 'erb-test');
 	});
 
-	it('waitAnimation with plain HTMLElement having className', function() {
+	it('animate with plain HTMLElement having className', async function() {
 		const target = document.createElement('div');
 		target.className = 'erb-previous';
 		document.body.appendChild(target);
-		Erebus.events.waitAnimation(target, 'erb-test', function() {
-			// NOTE: on the simulated phantom browser the animation does not work
-		});
+		await Erebus.events.animate(target, 'erb-test');
 		assert.strictEqual(target.className, 'erb-previous erb-test');
 	});
 
-	it('waitAnimation with ErebusElement', function() {
+	it('animate with ErebusElement', async function() {
 		const target = document.createElement('div');
 		target.className = 'erb-previous';
 		const element = Erebus.element(target);
-		Erebus.events.waitAnimation(element, 'erb-test', function() {
-			// NOTE: on the simulated phantom browser the animation does not work
-		});
+		await Erebus.events.animate(element, 'erb-test');
 		assert.strictEqual(target.className, 'erb-previous erb-test');
 	});
+	*/
 });
