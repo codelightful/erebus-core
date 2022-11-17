@@ -9,5 +9,6 @@ import handler from './handler.mjs';
 import element from './element.mjs';
 import http from './http.mjs';
 import i18n from './i18n.mjs';
+import router from './router.mjs';
 
-export default { utils, cookies, random, events, handler, element, http, i18n };
+export default { utils, cookies, random, events, handler, element, http, i18n, router };
