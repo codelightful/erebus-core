@@ -1,6 +1,6 @@
 import jsdom from 'jsdom';
 
-const dom = new jsdom.JSDOM();
+const dom = new jsdom.JSDOM('<!DOCTYPE html>');
 global.window = dom.window;
 global.document = window.document;
 global.HTMLElement = window.HTMLElement

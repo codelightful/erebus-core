@@ -48,9 +48,9 @@ function cloneHTMLElement(sourceElement) {
 /**
  * Internal method to create an ErebusElement based on the data provided
  * @param {*} source String with the selector, string with HTML code (to create a wrapper for it), reference to an HTMLElement
- * @returns 
+ * @returns
  */
-function getElement(source) {
+function createErebusElement(source) {
 	if (!source) {
 		return null;
 	} else if (source instanceof ErebusElement) {
@@ -173,13 +173,13 @@ class ErebusElement {
 	setParentNode(parent) {
 		if (!parent) {
 			this.each(element => {
-				if(element.parentNode) {
+				if (element.parentNode) {
 					element.parentNode.removeChild(element);
 				}
 			});
 			return this;
 		} else if (typeof (parent) === 'string') {
-			parent = getElement(parent);
+			parent = createErebusElement(parent);
 		} else if (typeof (parent.appendChild) !== 'function') {
 			throw Error('erebus.wrapper.append_to.invalid_parent[' + typeof (parent) + ']');
 		}
@@ -196,9 +196,8 @@ class ErebusElement {
 
 	/**
 	 * Append a child element to the wrapped element
-	 * @param {*} value String with the HTML element to add or reference to the HTML element to add or 
+	 * @param {*} value String with the HTML element to add or reference to the HTML element to add or
 	 * 			reference to the ErebusElement to add.
-	 * @returns 
 	 */
 	appendChild(value) {
 		if (typeof (value) === 'string') {
@@ -324,6 +323,8 @@ class ErebusElement {
 				}
 				if (!element.className) {
 					element.className = className;
+				} else if (element.classList) {
+					element.classList.add(className);
 				} else {
 					const regex = new RegExp('(^|\\s)(' + className + ')($|\\s)', 'g');
 					if (!regex.test(element.className)) {
@@ -367,4 +368,4 @@ class ErebusElement {
 	}
 }
 
-export default getElement;
+export default createErebusElement;
