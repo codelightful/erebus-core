@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap');
+
+body {
+	font-family: 'Nunito', sans-serif;
+	font-size: 18px;
+	margin: 0;
+}
+
+a {
+	text-decoration: none;
+	color: #155efc;
+}
+
+/* Sidebar area with the menu */
+.page-sidebar {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	width: 200px;
+	padding: 1rem;
+}
+
+/* Main area with the page content */
+.page-content {
+	position: fixed;
+	top: 0;
+	left: 200px;
+	right: 0;
+	bottom: 0;
+	padding: 1rem;
+}
+
+h1 {
+	margin: 0;
+	font-size: 2rem;
+}
+h2 {
+	margin: 0;
+	font-size: 1.2rem;
+}
+
+/* Style for a menu entry */
+.erb-menu-entry {
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+/* Header separator inside a menu */
+.erb-menu-section {
+	font-weight: bolder;
+	padding-top: 15px;
+}
+
+/* Header area of a documentation section */
+.erb-doc-header {
+	border-bottom: solid 1px #acacac;
+	padding-bottom: 15px;
+}
+.erb-doc-header > h2 {
+	font-size: 1.2rem;
+	font-weight: normal;
+	color: #515151;
+}
+
+/* Content area of a documentation section */
+.erb-doc-content {
+	margin-top: 15px;
+	font-size: 1rem;
+}
+.erb-doc-content > h3 {
+	font-size: 1.3rem;
+	margin-top: 20px;
+	margin-bottom: 0;
+}
+.erb-doc-content > h4 {
+	font-size: 1.1rem;
+	margin-top: 15px;
+	margin-bottom: 0;
+}
+.erb-doc-content p {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+/* Area containing a code example */
+.erb-code-snip {
+	border-left: solid 5px #acacac;
+	padding: 10px 15px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-family: 'Courier New', Courier, monospace;
+	background-color: #f3f3f3;
+}
+.erb-code-snip .erb-literal {
+	color: rgb(175, 80, 25);
+}
+
+/* Block of code with relevant information */
+.erb-doc-note {
+	margin-top: 15px;
+	margin-bottom: 15px;
+	border: solid 1px #acacac;
+	padding: 10px;	
+}

@@ -5,93 +5,23 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 	<meta name="theme-color" content="#000000" />
     <meta name="description" content="Erebus Core Library"/>
-	<title>Erebus Core Library</title>
-    <link rel="stylesheet" type="text/css" href="./site/erebus-samples.css"/>
-    <script type="text/javascript" src="./dist/erebus-core.min.js"></script>
-	<style>
-		.boxed {
-			padding: 10px; 
-			margin: 5px; 
-			display: inline-block;
-			background-color: #cecece;
-		}
-
-		.bordered {
-			border: solid 1px #505050;
-		}
-
-		.erebus-element {
-			border: solid 1px #505050; 
-			background-color: #ffffa3; 
-		}
-	</style>
-    <script type="text/javascript">
-		function getHtmlElement() {
-			const htmlElem = document.createElement('div');
-			htmlElem.innerHTML = 'This is the content inside a dynamic HTML element';
-			htmlElem.className = 'boxed bordered'
-			htmlElem.style.borderColor = 'red';
-			htmlElem.style.display = 'inline-block';
-			htmlElem.style.padding = '5px';
-			htmlElem.style.margin = '5px';
-			htmlElem.addEventListener('click', function() {
-				console.log('Ha hecho click');
-			});
-			return htmlElem;
-		}
-
-		Erebus.events.onReady(function() {
-			//const elem = Erebus.element('body');
-			const elem = Erebus.element('body > div');
-			//const elem = Erebus.element('.erebus-title');
-			//const elem = Erebus.element('.erebus-text');
-			
-			//const elem = Erebus.element('<div id="erebusOne" class="boxed erebus-element">Erebus Element One</div><div id="erebusTwo" class="boxed erebus-element">Erebus Element Two</div>');
-			//elem.parentNode = document.body;
-			//elem.setParentNode(document.body);
-			//elem.parentNode = '#divTitle';
-			//elem.setParentNode('#divTitle');
-			// elem.setParentNode('#xxx'); // not existing id
-			//elem.setParentNode(document.getElementById('divTitle'));
-			//elem.setParentNode('body > div');
-			//elem.setParentNode('.erebus-text');
-			//elem.setParentNode('.xxx'); // not existing selector
-			//setTimeout(function() { elem.setParentNode(null); }, 3000);
-
-			//elem.content('Text content');
-			//elem.appendChild('XXX');
-			elem.appendChild('<span class="boxed bordered">One</span>');
-			// FIXME: despues de agregado no se puede interactuar con los otros elementos que se clonaron
-			//elem.content(getHtmlElement());
-			//elem.content(document.getElementById('spanElement'));
-			//elem.content('<div class="boxed" style="border: solid 1px green; background-color: #b1ffb1;">Injected Content</div>');
-			//elem.content(Erebus.element('#spanElement'));
-			//elem.content(Erebus.element('ul'));
-			//elem.content(Erebus.element('<div class="boxed" style="border: solid 1px violet;">Dynamic content created with Erebus Element</div>'));
-			//setTimeout(function() { elem.hide(); }, 1000);
-			//setTimeout(function() { elem.show(); }, 2000);
-			elem.addEventListener('click', function(evt) {
-				console.log('clicked', evt.target);
-			});
-		});
-    </script>
+	<title>Erebus - Core Library</title>
+    <link rel="stylesheet" type="text/css" href="./site/erebus-site.css"/>
+	<script type="text/javascript" src="./dist/erebus-core.min.js"></script>
+	<script type="text/javascript" src="./site/erebus-site.js"></script>
 </head>
 <body>
-	<div id="divTitle" class="erebus-title">Welcome to Erebus Core Library</div>
-	<div class="erebus-text">This is the core Erebus web page</div>
-	<div class="erebus-text">We have multiple elements satisfying this selector using class</div>
-	<nav style="display: none;">
-		<span id="spanElement" class="boxed" style="border: solid 1px blue; background-color: #afafff;">Inner element with text</span>
-		<ul id="firstList">
-			<li>One</li>
-			<li>Two</li>
-			<li>Three</li>
-		</ul>
-		<ul id="seondList">
-			<li>First</li>
-			<li>Second</li>
-			<li>Third</li>
-		</ul>
-	</nav>
+	<div id="div_page_sidebar" class="page-sidebar">
+		<div class="erb-menu">
+			<div class="erb-menu-entry"><a href="#">Introduction</a></div>
+			<div class="erb-menu-entry"><a href="#quickstart">Quick start</a></div>
+			<div class="erb-menu-section">API Reference</div>
+			<div class="erb-menu-entry"><a href="#api/element">Erebus.element</a></div>
+		</div>
+	</div>
+	
+	<div id="div_page_content" class="page-content">
+		...
+	</div>
 </body>
 </html>
