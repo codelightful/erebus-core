@@ -68,9 +68,7 @@ class Route {
 	 */
 	constructor(path, handler) {
 		this.#path = clearPath(path);
-		if (typeof (handler) === 'function') {
-			this.#handler = handler;
-		}
+		this.#handler = handler;
 	}
 
 	/**
@@ -90,8 +88,7 @@ class Route {
 	/** Handles a request using this route instance */
 	handle(path) {
 		if (!this.#handler) {
-			console.error('erebus.route.no_handler');
-			return Promise.reject(new Error('erebus.route.no_handler'));
+			return Promise.reject(new Error(`erebus.route.no_handler[${path}]`));
 		}
 		return new Promise((resolve, reject) => {
 			path = clearPath(path);
@@ -144,6 +141,9 @@ class RouterEngine {
 	 * @returns Instance of the routing engine
 	 */
 	register(path, handler) {
+		if (!handler || typeof(handler) !== 'function') {
+			throw Error(`erebus.router.invalid_handler[${path}]`);
+		}
 		this.#routes.push(new Route(path, handler));
 		return this;
 	}
@@ -201,10 +201,17 @@ class RouterEngine {
 
 	/**
 	 * Defines the behavior for the default route (when no other route matches the path)
-	 * @param {function} handler Funtion to be invoked when no other route matches the requested path
+	 * @param {function} handler Funtion to be invoked when no other route matches the requested path or null to remove the default handler
 	 * @returns Instance of the routing engine
 	 */
 	default(handler) {
+		if (!handler) {
+			this.#defaultRouter = null;
+			return this;
+		} else if(typeof(handler) != 'function') {
+			console.error('Unable to register a non-function as a default handler for Erebus router');
+			throw new Error('erebus.router.invalid_default_handler');
+		}
 		this.#defaultRouter = new Route('*', handler);
 		return this;
 	}
@@ -215,9 +222,14 @@ class RouterEngine {
 	 * @returns Instance of the routing engine
 	 */
 	error(handler) {
-		if (typeof (handler) === 'string') {
-			this.#onError = handler;
+		if (!handler) {
+			this.#onError = null;
+			return this;
+		} else if (typeof (handler) !== 'function') {
+			console.error('Unable to register a non-function as an error handler for Erebus router');
+			throw new Error('erebus.router.invalid_error_handler');
 		}
+		this.#onError = handler;
 		return this;
 	}
 }

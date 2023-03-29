@@ -1,4 +1,6 @@
 import utils from './utils.mjs';
+import http from './http.mjs';
+import random from './random.mjs';
 
 const $scope = {};
 
@@ -69,12 +71,12 @@ function createErebusElement(source) {
 		} else if (source.startsWith('#')) {
 			nativeSource = document.getElementById(source.substring(1));
 			if (!nativeSource) {
-				throw Error('erebus.element.unknown_element_id[' + source + ']');
+				throw Error(`erebus.element.unknown_element_id[${source}]`);
 			}
 		} else {
 			nativeSource = document.querySelectorAll(source);
 			if (nativeSource.length === 0) {
-				throw Error('erebus.element.unknown_selector[' + source + ']');
+				throw Error(`erebus.element.unknown_selector[${source}]`);
 			}
 		}
 		return new ErebusElement(nativeSource);
@@ -365,6 +367,17 @@ class ErebusElement {
 		this.each(element => {
 			element.className = value;
 		});
+	}
+
+	/** Loads the content from an external resource inside the element represented by the current instance */
+	load(url) {
+		return http.get(url).then((response) => {
+            this.content(response);
+        }).catch((err) => {
+			const errorId = random.shortId();
+			console.error(`erebus.element.load_error[${errorId}]`, err);
+			this.content(`<div>Error[${errorId}]</div>`);
+        });
 	}
 }
 
