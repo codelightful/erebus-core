@@ -208,7 +208,7 @@ class RouterEngine {
 		if (!handler) {
 			this.#defaultRouter = null;
 			return this;
-		} else if(typeof(handler) != 'function') {
+		} else if (typeof(handler) != 'function') {
 			console.error('Unable to register a non-function as a default handler for Erebus router');
 			throw new Error('erebus.router.invalid_default_handler');
 		}

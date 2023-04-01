@@ -4,7 +4,7 @@ const $module = {};
  * Allows to register a callback to be executed when the document ready state has been reached
  * @returns Promise to be fulfilled once the document is ready
  */
-$module.documentReady = function() {
+$module.onReady = function() {
 	if (document.readyState !== 'loading') {
 		return Promise.resolve();
 	}

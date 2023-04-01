@@ -1,4 +1,4 @@
-Erebus.events.documentReady().then(function() {
+Erebus.events.onReady().then(function() {
     const contentArea = Erebus.element('#div_page_content');
     
     Erebus.router.register('/', () => contentArea.load('./site/fragments/home.html'));

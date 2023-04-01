@@ -1,7 +1,7 @@
 import babel from '@rollup/plugin-babel';
-import { terser } from 'rollup-plugin-terser';
+import terser from '@rollup/plugin-terser';
 import resolve from '@rollup/plugin-node-resolve';
-import pkg from './package.json';
+import pkg from './package.json' assert {type: "json"};
 
 export default {
     input: 'src/erebus.mjs',

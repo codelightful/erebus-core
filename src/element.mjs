@@ -372,12 +372,12 @@ class ErebusElement {
 	/** Loads the content from an external resource inside the element represented by the current instance */
 	load(url) {
 		return http.get(url).then((response) => {
-            this.content(response);
-        }).catch((err) => {
+			this.content(response);
+		}).catch((err) => {
 			const errorId = random.shortId();
 			console.error(`erebus.element.load_error[${errorId}]`, err);
 			this.content(`<div>Error[${errorId}]</div>`);
-        });
+		});
 	}
 }
 
