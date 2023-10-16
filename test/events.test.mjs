@@ -11,13 +11,13 @@ describe('Events', function() {
 
 	it('Contract', function() {
 		assert.ok(Erebus.events);
-		assert.ok(Erebus.events.onReady);
+		assert.ok(Erebus.events.documentReady);
 		assert.ok(Erebus.events.animate);
 	});
 
-	it('onReady', async function() {
+	it('documentReady', async function() {
 		document.body.innerHTML = '';
-		await Erebus.events.onReady();
+		await Erebus.events.documentReady();
 		document.body.innerHTML = 'Ready!';
 		assert.strictEqual(document.body.innerHTML, 'Ready!');
 	});

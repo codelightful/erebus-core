@@ -1,10 +1,10 @@
 const $module = {};
 
 /**
- * Allows to register a callback to be executed when the document ready state has been reached
+ * Returns a promise fullfilled when the document has been loaded and parsed.
  * @returns Promise to be fulfilled once the document is ready
  */
-$module.onReady = function() {
+$module.documentReady = function() {
 	if (document.readyState !== 'loading') {
 		return Promise.resolve();
 	}
@@ -22,7 +22,7 @@ $module.onReady = function() {
 			});
 		});
 	}
-	console.log('The current browser event management is not supported by the Erebus framework');
+	console.error('The current browser event management is not supported by the Erebus framework');
 	return Promise.reject('erebus.events.unsuported_browser');
 };
 
@@ -33,9 +33,9 @@ $module.onReady = function() {
  */
 $module.animate = function(target, animationClass) {
 	if (!target) {
-		return Promise.reject(Error('erebus.events.wait_animation.invalid_target'));
+		return Promise.reject('erebus.events.wait_animation.invalid_target');
 	} else if (!animationClass) {
-		return Promise.reject(Error('erebus.events.wait_animation.invalid_animation'));
+		return Promise.reject('erebus.events.wait_animation.invalid_animation');
 	}
 	return new Promise(function(resolve) {
 		// registers the event handler

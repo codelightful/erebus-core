@@ -1,26 +1,24 @@
 <div class="erb-doc-header">
-	<h1>Element</h1>
-	<h2>Provides an instance to represent and wrap a DOM element to simplify manipulation and action on it</h2>
+	<h1>Router</h1>
+	<h2>Provides a mechanism to assign actions to changes in the URL</h2>
 </div>
 
 <div class="erb-doc-content">
 	<h3>Creation</h3>
 	You can create a new element representing a specific block of HTML code
-	<code>
+	<div class="erb-code-snip">
 		var element = Erebus.element(<span class="erb-literal">'&lt;div&&gt;This is a test&lt;/div&gt;'</span>);
-	</code>
+	</div>
 
 	The creation method refer an existing DOM element using a CSS selector
-	<code>
-		var elementFromId = Erebus.element(<span class="erb-literal">'#myElement'</span>);
-		<br/>
-		var elementFromClass = Erebus.element(<span class="erb-literal">'.myclass'</span>);
-	</code>
+	<div class="erb-code-snip">
+		var element = Erebus.element(<span class="erb-literal">'#my-element-id'</span>);
+	</div>
 
 	Also, you can pass an existing HTMLElement
-	<code>
+	<div class="erb-code-snip">
 		var element = Erebus.element(document.body);
-	</code>
+	</div>
 
 	<div class="erb-doc-note">
 		Note: If you create an element refering to the body, a singleton instance will be created for it
@@ -33,9 +31,9 @@
 	<h4>Clear</h4>
 	<p>Removes all the content inside the DOM elements represented by the instance.</p>
 	<p>Returns a reference to the element.</p>
-	<code>
-		Erebus.element(<span class="erb-literal">'#myElement'</span>).clear();
-	</code>
+	<div class="erb-code-snip">
+		Erebus.element('.cells').clear();
+	</div>
 
 	<h4>Content</h4>
 	<p>Sets the content inside the element represented by the instance.</p>
@@ -43,15 +41,14 @@
 
 	<p>The content can be a literal with plain text or HTML.</p>
 	Example: This code snipplet sets a plain text content inside all the elements with the "cell" CSS class
-	<code>
-		Erebus.element(<span class="erb-literal">'#myElement'</span>).content(<span class="erb-literal">'Some plain content'</span>);
-	</code>
+	<div class="erb-code-snip">
+		Erebus.element(<span class="erb-literal">'.cells'</span>).content(<span class="erb-literal">'Some plain content'</span>);
+	</div>
 
 	<p>The content can be a HTMLElement recently created or extracted from the DOM.</p>
 	Example: This code snipplet sets the existing DOM element with the id "my-div" inside the element
-	<code>
-		var sourceElement = document.getElementById(<span class="erb-literal">'mydiv'</span>);
-		<br/>
-		Erebus.element(<span class="erb-literal">'#myElement'</span>).content(sourceElement);
-	</code>
+	<div class="erb-code-snip">
+		<div>var sourceElement = document.getElementById(<span class="erb-literal">'mydiv'</span>)</div>
+		<div>Erebus.element(<span class="erb-literal">'.cells'</span>).content(sourceElement);</div>
+	</div>
 </div>
