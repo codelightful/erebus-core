@@ -1,0 +1,39 @@
+<div class="erb-doc-header">
+	<h1>Elements (Running example)</h1>
+    <a class="erb-return-link" href="#api/element">Return to the reference page</a>
+</div>
+
+<div class="erb-doc-content">
+    <div class="erb-doc-section">
+        An ErebusElement can be created using plain HTML in the constructor.  This is useful to create new dynamic content.
+        <div id="divSample001"></div>
+    </div>
+    <script class="text/javascript">
+        var element = Erebus.element('<div class="erb-bordered">This content     was created dynamically from a string contaning HTML</div>');
+        element.setParentNode('#divSample001');
+    </script>
+
+    <div class="erb-doc-section">
+        An ErebusElement can be created using a reference to a HTMLElement object.
+        <div id="divSample002"></div>
+    </div>
+    <script class="text/javascript">
+        var sourceElement = document.createElement('div');
+        sourceElement.className = 'erb-bordered';
+        sourceElement.innerHTML = 'This element was created dynamically from a HTMLElement';
+        var element = Erebus.element(sourceElement);
+        element.setParentNode('#divSample002');
+    </script>
+
+    <div class="erb-doc-section">
+        An ErebusElement can be created using a the identifier of an existing DOM element.
+        <br/>
+        The content of a ErebusElement can be changed using a string containing HTML.
+        <div id="divSample003" class="erb-bordered">...</div>
+    </div>
+    <script class="text/javascript">
+        var element = Erebus.element('#divSample003');
+        element.content('<div >This content was added dynamically into an existing DOM element</div>');
+    </script>
+</div>
+

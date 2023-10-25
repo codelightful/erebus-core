@@ -3,6 +3,37 @@ import http from './http.mjs';
 import random from './random.mjs';
 
 const $scope = {};
+// Will hold the reference to the parser instance (if available) or false if it is not available
+$scope.domParser = null;
+
+/**
+ * Utility method to create a HTMLElement from an XMLElement
+ * @param {*} xmlElement XMLElement to create the XMLFrom it
+ * @returns HTMLElement created from the XMLElement
+ */
+function xmlToHtml(xmlElement) {
+	var htmlElement = document.createElement(xmlElement.tagName);
+	// Recreates the attributes
+	for (let ndx=0; ndx < xmlElement.attributes.length; ndx++) {
+		const xmlAttribute = xmlElement.attributes[ndx];
+		htmlElement.setAttribute(xmlAttribute.name, xmlAttribute.value);
+	}
+	// Recreates the child elements
+	for (let ndx=0; ndx < xmlElement.childNodes.length; ndx++) {
+		const childXml = xmlElement.childNodes[ndx];
+		if (childXml.nodeType === 3) {
+			const childText = document.createTextNode(childXml.textContent);
+			htmlElement.appendChild(childText);
+			continue;
+		} else if (childXml.nodeType !== 1) {
+			console.warn(`erebus.element.xml_to_html.invalid_node_type[${childXml.nodeType}]`);
+			continue;
+		}
+		const childHtml = xmlToHtml(childXml);
+		htmlElement.appendChild(childHtml);
+	}
+	return htmlElement;
+}
 
 /**
  * Parses a string HTML content and returns its content or null if it is not HTML content
@@ -13,9 +44,28 @@ function parseHTML(content) {
 	if (!content || typeof (content) !== 'string') {
 		return [];
 	}
-	const holder = document.createElement('div');
-	holder.innerHTML = content;
-	return [...holder.childNodes];
+	if ($scope.domParser === null) {
+		if (typeof(DOMParser) === 'undefined') {
+			$scope.domParser = false;
+		} else {
+			$scope.domParser = new DOMParser();
+		}
+	}
+	if ($scope.domParser === false) {
+		const holder = document.createElement('div');
+		holder.innerHTML = content;
+		return [...holder.childNodes];
+	}
+	// NOTE: We use the XML parser, because the HTML parser does not parse certain tags
+	// For example: trying to parse a TR or a TD does not work
+	// Parsing atomic HTMLElements is crucial for the good work of the element since allows to create atomic portions of content
+	const results = [];
+	const holder = $scope.domParser.parseFromString(content, 'text/xml');
+	for (let ndx=0; ndx < holder.childNodes.length; ndx++) {
+		const element = xmlToHtml(holder.childNodes[ndx]);
+		results.push(element);
+	}
+	return results;
 }
 
 /**
@@ -48,6 +98,24 @@ function cloneHTMLElement(sourceElement) {
 }
 
 /**
+ * Creates a block containing error information that can be correlated in the console
+ * @param {*} errorCode Code to show in the console to describe the error
+ * @param {*} errorInstance Root cause (usually an Error object captured as an exception)
+ * @returns HTMLElement containing the error message to be shown in the UI
+ */
+function createErrorContent(errorCode, errorInstance) {
+	const errorId = random.shortId();
+	if (errorInstance) {
+		console.error(`${errorCode}[${errorId}]`, errorInstance);
+	} else {
+		console.error(`${errorCode}[${errorId}]`);
+	}
+	const errorElement = document.createElement('div');
+	errorElement.innerHTML = `Error[${errorId}]`;
+	return errorElement;
+}
+
+/**
  * Internal method to create an ErebusElement based on the data provided
  * @param {*} source String with the selector, string with HTML code (to create a wrapper for it), reference to an HTMLElement
  * @returns
@@ -68,15 +136,22 @@ function createErebusElement(source) {
 		var nativeSource;
 		if (source.startsWith('<') && source.endsWith('>')) {
 			nativeSource = parseHTML(source);
+			if (nativeSource.length == 0) {
+				nativeSource = createErrorContent('erebus.element.invalid_html.empty_content');
+			} else if (nativeSource.length > 1) {
+				nativeSource = createErrorContent('erebus.element.invalid_html.multiple_nodes');
+			} else {
+				nativeSource = nativeSource[0];
+			}
 		} else if (source.startsWith('#')) {
 			nativeSource = document.getElementById(source.substring(1));
 			if (!nativeSource) {
-				throw Error(`erebus.element.unknown_element_id[${source}]`);
+				throw new Error(`erebus.element.unknown_element_id[${source}]`);
 			}
 		} else {
-			nativeSource = document.querySelectorAll(source);
-			if (nativeSource.length === 0) {
-				throw Error(`erebus.element.unknown_selector[${source}]`);
+			nativeSource = document.querySelector(source);
+			if (!nativeSource) {
+				throw new Error(`erebus.element.unknown_selector[${source}]`);
 			}
 		}
 		return new ErebusElement(nativeSource);
@@ -85,84 +160,65 @@ function createErebusElement(source) {
 
 /** Wrapper to allow common methods to handle HTML content */
 class ErebusElement {
-	#wrappedElements;
+	#wrappedElement;
+	// Allows to determine if the element is visible or not
 	#hidden;
 
 	constructor(element) {
 		this.#hidden = false;
 		if (element instanceof HTMLElement) {
-			this.#wrappedElements = [];
-			this.#wrappedElements.push(element);
-		} else if (element instanceof NodeList) {
-			this.#wrappedElements = Array.from(element);
-		} else if (Array.isArray(element)) {
-			this.#wrappedElements = element;
+			this.#wrappedElement = element;
 		} else {
-			throw Error('erebus.element.unknown_type[' + typeof (element) + ']');
+			throw new Error('erebus.element.invalid_element[' + typeof (element) + ']');
 		}
 	}
 
-	/**
-	 * Iterates each wrapped element and invokes a handler that receives each separate instane
-	 * @param {function} handler Function that receives each separated HTMLElement wrapped, the function
-	 * 			receives the instance and an integer with the index of the element
-	 */
-	each(handler) {
-		for (let wdx = 0; wdx < this.#wrappedElements.length; wdx++) {
-			const result = handler(this.#wrappedElements[wdx], wdx);
-			if (result === false) {
-				break;
-			}
-		}
+	/** Allows to obtain the reference to the wrapped element */
+	get element() {
+		return this.#wrappedElement;
 	}
 
 	/**
-	 * Sets the innerHTML on the wrapped elements
+	 * Sets the innerHTML on the wrapped element.
+	 * This is a compatibility method to maintain consistency and interchangeability with HTMLElement.
+	 * @param {string} value String with the HTML content to set
 	 */
 	set innerHTML(value) {
-		this.each(element => {
-			element.innerHTML = value;
-		});
+		this.#wrappedElement.innerHTML = value;
 	}
 
-	/** Remove all the content from the current instance */
+	/** Removes all the content from the current instance */
 	clear() {
-		this.each((element) => {
-			element.innerHTML = '';
-			removeAllChild(element);
-		});
-		return this;
+		this.#wrappedElement.innerHTML = '';
+		removeAllChild(this.#wrappedElement);
 	}
 
 	/**
-	 * Sets the content inside the wrapped elements.  This method is preferred over innerHTML
+	 * Sets the content inside the wrapped element.  This method is preferred over innerHTML
 	 * since it cleans the event listener associated with the child nodes.
-	 * @param {*} value String with the content to add (text or HTML), a reference to a HTMLElement to set as the content
+	 * @param {any} value String with the content to add (text or HTML), a reference to a HTMLElement to set as the content
 	 * 			or a reference to another ErebusElement.
 	 * @returns The current wrapper instance
 	 */
 	content(value) {
-		this.each((element, index) => {
-			if (typeof (value) === 'string') {
-				element.innerHTML = value;
-			} else if (value instanceof HTMLElement) {
-				element.innerHTML = '';
-				removeAllChild(element);
-				if (index === 0) {
-					element.appendChild(value);
-				} else {
-					element.appendChild(cloneHTMLElement(value));
-				}
-			} else if (value instanceof ErebusElement) {
-				element.innerHTML = '';
-				removeAllChild(element);
-				if (index === 0) {
-					value.setParentNode(element);
-				} else {
-					value.clone().setParentNode(element);
-				}
+		this.clear();
+		if (typeof (value) === 'string') {
+			this.#wrappedElement.innerHTML = value;
+			// If javascript content was added as part of the content, then processes it as a script tag
+			const innerScripts = this.#wrappedElement.querySelectorAll('script');
+			for (var ndx=0; ndx < innerScripts.length; ndx++) {
+				const scriptObj = innerScripts[ndx];
+				scriptObj.parentNode.removeChild(scriptObj);
+				var newScript = document.createElement('script');
+				newScript.textContent = scriptObj.textContent;
+				this.#wrappedElement.appendChild(newScript);
 			}
-		});
+		} else if (value instanceof HTMLElement) {
+			this.#wrappedElement.appendChild(value);
+		} else if (value instanceof ErebusElement) {
+			this.clear();
+			value.setParentNode(this.#wrappedElement);
+		}
 		return this;
 	}
 
@@ -174,20 +230,16 @@ class ErebusElement {
 	 */
 	setParentNode(parent) {
 		if (!parent) {
-			this.each(element => {
-				if (element.parentNode) {
-					element.parentNode.removeChild(element);
-				}
-			});
+			if (this.#wrappedElement.parentNode) {
+				this.#wrappedElement.parentNode.removeChild(this.#wrappedElement);
+			}
 			return this;
 		} else if (typeof (parent) === 'string') {
 			parent = createErebusElement(parent);
 		} else if (typeof (parent.appendChild) !== 'function') {
-			throw Error('erebus.wrapper.append_to.invalid_parent[' + typeof (parent) + ']');
+			throw new Error('erebus.wrapper.append_to.invalid_parent[' + typeof (parent) + ']');
 		}
-		this.each(element => {
-			parent.appendChild(element);
-		});
+		parent.appendChild(this.#wrappedElement);
 		return this;
 	}
 
@@ -204,34 +256,14 @@ class ErebusElement {
 	appendChild(value) {
 		if (typeof (value) === 'string') {
 			const parsedContent = parseHTML(value);
-			this.each((element, index) => {
-				for (let idx = 0; idx < parsedContent.length; idx++) {
-					const content = parsedContent[idx];
-					if (index === 0) {
-						element.appendChild(content);
-					} else {
-						element.appendChild(cloneHTMLElement(content));
-					}
-				}
-			});
-		} else {
-			this.each((element, index) => {
-				if (value instanceof HTMLElement) {
-					if (index === 0) {
-						element.appendChild(value);
-					} else {
-						element.appendChild(cloneHTMLElement(value));
-					}
-				} else if (value instanceof ErebusElement) {
-					value.each(innerElement => {
-						if (index === 0) {
-							element.appendChild(innerElement);
-						} else {
-							element.appendChild(cloneHTMLElement(innerElement));
-						}
-					});
-				}
-			});
+			for (let idx = 0; idx < parsedContent.length; idx++) {
+				const content = parsedContent[idx];
+				this.#wrappedElement.appendChild(content);
+			}
+		} else if (value instanceof HTMLElement) {
+			this.#wrappedElement.appendChild(value);
+		} else if (value instanceof ErebusElement) {
+			this.#wrappedElement.appendChild(value.element);
 		}
 		return this;
 	}
@@ -245,14 +277,12 @@ class ErebusElement {
 	 */
 	addEventListener(eventName, listener, options) {
 		if (!eventName) {
-			throw Error('erebus.element.add_listener.null_event_name');
+			throw new Error('erebus.element.add_listener.null_event_name');
 		} else if (typeof (listener) === 'function') {
 			if (options === undefined) {
 				options = { capture: false };
 			}
-			this.each(element => {
-				element.addEventListener(eventName, listener, options);
-			});
+			this.#wrappedElement.addEventListener(eventName, listener, options);
 		}
 		return this;
 	}
@@ -278,37 +308,30 @@ class ErebusElement {
 			return;
 		}
 		this.#hidden = true;
-		this.each(element => {
-			const computedDisplay = getComputedStyle(element).getPropertyValue('display');
-			if (computedDisplay && computedDisplay !== 'none') {
-				element.originalDisplay = computedDisplay;
-			}
-			element.style.display = 'none';
-		});
+		const computedDisplay = getComputedStyle(this.#wrappedElement).getPropertyValue('display');
+		if (computedDisplay && computedDisplay !== 'none') {
+			this.#wrappedElement.originalDisplay = computedDisplay;
+		}
+		this.#wrappedElement.style.display = 'none';
 	}
 
 	/** Shows the wrapped elements to make it visible */
 	show() {
 		this.#hidden = false;
-		this.each(element => {
-			const computedDisplay = getComputedStyle(element).getPropertyValue('display');
-			if (!computedDisplay || computedDisplay === 'none') {
-				if (element.originalDisplay) {
-					element.style.display = element.originalDisplay;
-					delete element.originalDisplay;
-				} else {
-					element.style.display = 'block';
-				}
+		const computedDisplay = getComputedStyle(this.#wrappedElement).getPropertyValue('display');
+		if (!computedDisplay || computedDisplay === 'none') {
+			if (this.#wrappedElement.originalDisplay) {
+				this.#wrappedElement.style.display = this.#wrappedElement.originalDisplay;
+				delete this.#wrappedElement.originalDisplay;
+			} else {
+				this.#wrappedElement.style.display = 'block';
 			}
-		});
+		}
 	}
 
 	/** Clone the current instance */
 	clone() {
-		const clonedWrapped = [];
-		this.each(element => {
-			clonedWrapped.push(cloneHTMLElement(element));
-		});
+		const clonedWrapped = cloneHTMLElement(this.#wrappedElement);
 		return new ErebusElement(clonedWrapped);
 	}
 
@@ -317,24 +340,22 @@ class ErebusElement {
 		if (!classes || classes.length === 0) {
 			return this;
 		}
-		this.each(element => {
-			for (var cdx = 0; cdx < classes.length; cdx++) {
-				const className = utils.trim(classes[cdx]);
-				if (!className || typeof (className) !== 'string') {
-					continue;
-				}
-				if (!element.className) {
-					element.className = className;
-				} else if (element.classList) {
-					element.classList.add(className);
-				} else {
-					const regex = new RegExp('(^|\\s)(' + className + ')($|\\s)', 'g');
-					if (!regex.test(element.className)) {
-						element.className += ' ' + className;
-					}
+		for (let cdx = 0; cdx < classes.length; cdx++) {
+			const className = utils.trim(classes[cdx]);
+			if (!className || typeof (className) !== 'string') {
+				continue;
+			}
+			if (!this.#wrappedElement.className) {
+				this.#wrappedElement.className = className;
+			} else if (this.#wrappedElement.classList) {
+				this.#wrappedElement.classList.add(className);
+			} else {
+				const regex = new RegExp('(^|\\s)(' + className + ')($|\\s)', 'g');
+				if (!regex.test(this.#wrappedElement.className)) {
+					this.#wrappedElement.className += ' ' + className;
 				}
 			}
-		});
+		}
 		return this;
 	}
 
@@ -343,41 +364,47 @@ class ErebusElement {
 		if (!classes || classes.length === 0) {
 			return this;
 		}
-		this.each(element => {
-			if (!element.className) {
-				return;
+		if (!this.#wrappedElement.className) {
+			return;
+		}
+		for (let cdx = 0; cdx < classes.length; cdx++) {
+			const className = utils.trim(classes[cdx]);
+			if (!className || typeof (className) !== 'string') {
+				continue;
 			}
-			for (var cdx = 0; cdx < classes.length; cdx++) {
-				const className = utils.trim(classes[cdx]);
-				if (!className || typeof (className) !== 'string') {
-					continue;
-				}
+			if (this.#wrappedElement.classList) {
+				this.#wrappedElement.classList.remove(className);
+			} else {
 				const regex = new RegExp('(^|\\s)(' + className + ')($|\\s)', 'g');
-				if (regex.test(element.className)) {
-					element.className = element.className.replace(regex, '');
+				if (regex.test(this.#wrappedElement.className)) {
+					this.#wrappedElement.className = this.#wrappedElement.className.replace(regex, '');
 				}
 			}
-		});
+		}
 		return this;
 	}
 
-	/** Set the CSS class name for the HTMLElements wrapped by the current instance */
+	/**
+	 * Set the CSS class name for the HTMLElements wrapped by the current instance
+	 * @param {string} value Name of the CSS class to add
+	 */
 	set className(value) {
 		value = utils.trim(value);
-		this.each(element => {
-			element.className = value;
-		});
+		this.#wrappedElement.className = value;
 	}
 
-	/** Loads the content from an external resource inside the element represented by the current instance */
-	load(url) {
-		return http.get(url).then((response) => {
+	/**
+	 * Loads the content from an external resource inside the element represented by the current instance
+	 * @param {string} url String of the source URL used to load content into the current instance
+	 */
+	async load(url) {
+		try {
+			const response = await http.get(url);
 			this.content(response);
-		}).catch((err) => {
-			const errorId = random.shortId();
-			console.error(`erebus.element.load_error[${errorId}]`, err);
-			this.content(`<div>Error[${errorId}]</div>`);
-		});
+		} catch (err) {
+			var errorBlock = createErrorContent('erebus.element.load_error', err);
+			this.content(errorBlock);
+		}
 	}
 }
 

@@ -1,0 +1,28 @@
+<div class="erb-doc-header">
+	<h1>Formats (Running example)</h1>
+    <a class="erb-return-link" href="#api/formats">Return to the reference page</a>
+</div>
+
+<div id="divSampleContent" class="erb-doc-content">
+</div>
+
+<script class="text/javascript">
+    function renderFormatter(inputValue, formatterCode, formatContainer, deformatContainer) {
+        const formatter = Erebus.formats(formatterCode);
+        const table = Erebus.element('<table class="erb-layout-table" style="width: 100%; margin-bottom: 30px;"></table>');
+        table.appendChild('<thead><tr><td></td><td style="width: 30%;">Valid Value</td><td style="width: 30%;">Invalid Value<br/>(abcd)</td></tr></thead>');
+        const validFormatted = formatter.format(inputValue);
+        var invalid = formatter.format('xxx');
+        table.appendChild(`<tr><td>Erebus.formats(${formatterCode}).format()</td><td>${validFormatted}</td><td>${invalid}</td></tr>`);
+        const validDeformatted = formatter.deformat(validFormatted);
+        invalid = formatter.deformat('xxx');
+        table.appendChild(`<tr><td>Erebus.formats(${formatterCode}).deformat()</td><td><div>${validDeformatted}</div><div>(${typeof(validDeformatted)})</div></td><td>${invalid}</td></tr>`);
+        Erebus.element('#divSampleContent').appendChild(table);
+    }
+
+    renderFormatter(1234567, 'integer', '#divFormatInteger', '#divDeformatInteger');
+    renderFormatter(1234567.3456, 'decimal', '#divFormatDecimal', '#divDeformatDecimal');
+    renderFormatter(1525000.75, 'money', '#divFormatMoney', '#divDeformatMoney');
+    renderFormatter(new Date(), 'date', '#divFormatDate', '#divDeformatDate');
+    renderFormatter(new Date(), 'datetime', '#divFormatDateTime', '#divDeformatDateTime');
+</script>

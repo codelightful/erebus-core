@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { runWithMockedConsole } from './setup/test-utils.mjs';
 await import('./setup/dom.mjs');
-const Erebus = (await import('../src/erebus.mjs')).default;
+const Erebus = (await import('../src/index.mjs')).default;
 
 describe('Handler', function () {
 	it('Trigger Null function', function () {

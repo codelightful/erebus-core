@@ -1,8 +1,8 @@
 import { strict as assert } from 'assert';
 await import('./setup/dom.mjs');
-const Erebus = (await import('../src/erebus.mjs')).default;
+const Erebus = (await import('../src/index.mjs')).default;
 
-describe('i18n (Internationalization)', function() {
+describe('I18N (Internationalization)', function() {
 	it('getLocale', function() {
 		const result = Erebus.i18n.getLocale();
 		assert.strictEqual(result, 'en-US');
@@ -102,5 +102,49 @@ describe('i18n (Internationalization)', function() {
 		assert.strictEqual(result, 'value.XX');
 		result = Erebus.i18n.getLabel('key.3');
 		assert.strictEqual(result, 'value.3');
+	});
+
+	it('Gets the system thousands separator', function() {
+		const result = Erebus.i18n.getSystemThousandsSeparator();
+		assert.ok(result);
+	});
+
+	it('Gets the system decimal separator', function() {
+		const result = Erebus.i18n.getSystemDecimalSymbol();
+		assert.ok(result);
+	});
+
+	it('Gets the system date format', function() {
+		const result = Erebus.i18n.getSystemDateFormat();
+		assert.ok(result);
+		assert.ok(result.indexOf('yyyy') >= 0);
+		assert.ok(result.indexOf('mm') >= 0);
+		assert.ok(result.indexOf('dd') >= 0);
+	});
+
+	it('Gets the default application date format', function() {
+		Erebus.i18n.setDateFormat(null);
+		const result = Erebus.i18n.getDateFormat();
+		assert.ok(result);
+		const systemFormat = Erebus.i18n.getSystemDateFormat();
+		assert.strictEqual(result, systemFormat);
+	});
+
+	it('Gets the overrided date format', function() {
+		Erebus.i18n.setDateFormat('yyyymmdd');
+		const result = Erebus.i18n.getDateFormat();
+		assert.strictEqual(result, 'yyyymmdd');
+	});
+
+	it('Gets the default application date/time format', function() {
+		Erebus.i18n.setDateFormat(null);
+		const result = Erebus.i18n.getDateTimeFormat();
+		assert.ok(result);
+		assert.ok(result.indexOf('yyyy') >= 0);
+		assert.ok(result.indexOf('mm') >= 0);
+		assert.ok(result.indexOf('dd') >= 0);
+		assert.ok(result.indexOf('hh') >= 0);
+		assert.ok(result.indexOf('MM') >= 0);
+		assert.ok(result.indexOf('ss') >= 0);
 	});
 });

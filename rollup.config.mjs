@@ -3,7 +3,7 @@ import terser from '@rollup/plugin-terser';
 import resolve from '@rollup/plugin-node-resolve';
 
 export default {
-    input: 'src/erebus.mjs',
+    input: 'src/index.mjs',
     output: {
         file: './dist/erebus-core.min.js',
         format: 'umd',

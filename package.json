@@ -1,10 +1,10 @@
 {
   "name": "erebus-core",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "Base web library",
   "repository": "https://github.com/codelightful/erebus-core",
   "browser": "./dist/erebus-core.min.js",
-  "main": "./src/erebus.mjs",
+  "main": "./src/index.mjs",
   "scripts": {
     "start": "npm-run-all --parallel watch serve",
     "serve": "web-dev-server",

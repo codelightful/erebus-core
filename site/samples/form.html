@@ -1,0 +1,108 @@
+<div class="erb-doc-header">
+	<h1>Forms (Running example)</h1>
+    <a class="erb-return-link" href="#api/form">Return to the reference page</a>
+</div>
+
+<div class="erb-doc-content">
+    <div id="formOne">
+        <div>
+            <label for="fldFieldRequest">Request ID:</label>
+            <input type="text" id="fldFieldRequest" model="requestId"/>
+        </div>
+        <div>
+            <label for="fldFieldRequest">Request Date/Time:</label>
+            <input type="text" id="fldFieldRequest" model="requestDate" format="datetime"/>
+        </div>
+        <div>
+            <label for="fldFieldClient">Client Name:</label>
+            <input type="text" id="fldFieldClient" model="client.name" value="Atlantis Corporation"/>
+        </div>
+        <div>
+            <label for="fldFieldEst">Client establishment date:</label>
+            <input type="text" id="fldFieldEst" model="client.est" value="" format="date"/>
+        </div>
+        <div>
+            <label for="fldFieldInvoicing">Annual invoicing:</label>
+            <input type="text" id="fldFieldInvoicing" model="client.invoicing" format="money"/>
+        </div>
+        <div>
+            <label for="fldFieldPerson">Contact person Name:</label>
+            <input type="text" id="fldFieldPerson" model="person.name" value="John Doe"/>
+        </div>
+        <div>
+            <label for="fldFieldAge">Age:</label>
+            <input type="text" id="fldFieldAge" model="person.age" format="integer"/>
+        </div>
+        <div>
+            <label for="fldFieldAge">Gender:</label>
+            <select id="fldFieldGender" model="person.gender">
+                <option value="">...</option>
+                <option value="F">Female</option>
+                <option value="M">Male</option>
+                <option value="N">Non disclosed</option>
+            </select>
+        </div>
+        <div>
+            <div><label>Civil Status:</label></div>
+            <label for="fldFieldStatusS">Single</label>
+            <input type="radio" id="fldFieldStatusS" name="fldStatus" value="S" model="person.status">
+            <label for="fldFieldStatusM">Married</label>
+            <input type="radio" id="fldFieldStatusM" name="fldStatus" value="M" model="person.status">
+            <label for="fldFieldStatusD">Divorced</label>
+            <input type="radio" id="fldFieldStatusD" name="fldStatus" value="D" model="person.status">
+        </div>
+        <div>
+            <label for="fldFieldDecision">Is decision maker:</label>
+            <input type="checkbox" value="Y" id="fldFieldDecision" model="decision"/>
+        </div>
+        <div>
+            <label for="fldFieldContacted">Was contacted:</label>
+            <input type="checkbox" value="@" id="fldFieldDecision" model="contacted"/>
+        </div>
+        <div>
+            <label for="fldFieldDiscount">Negotiated discount %:</label>
+            <input type="text" id="fldFieldDiscount" model="discount" format="decimal"/>
+        </div>
+        <div class="erb-buttonbar">
+            <button onclick="collectForm();">Collect form</button>
+            <button onclick="fillForm();">Fill form</button>
+            <button onclick="cleanForm();">Clean form</button>
+        </div>
+        <div id="divOutputArea" style="padding-top: 20px;"></div>
+    </div>
+</div>
+
+<script class="text/javascript">
+    document.getElementById('fldFieldRequest').value = Erebus.random.guid();
+    document.getElementById('fldFieldEst').value = new Date(1980, 5, 25).toLocaleDateString();
+    
+    function collectForm() {
+        var values = Erebus.form('formOne').collect();
+        Erebus.element('#divOutputArea').innerHTML = JSON.stringify(values);
+    }
+
+    function fillForm() {
+        Erebus.form('formOne').fill({
+            requestId: '7eee-f91e-022a-2c0aebab',
+            requestDate: new Date(),
+            client: {
+                name: 'Stoic Foundation',
+                est: new Date(2000, 2, 20),
+                invoicing: 10565480
+            },
+            discount: 14.2456,
+            person: {
+                name: 'Melinda Johnson',
+                age: 25,
+                gender: 'F',
+                status: 'M'
+            },
+            decision: 'Y',
+            contacted: true
+        });
+    }
+
+    function cleanForm() {
+        Erebus.form('formOne').clean();
+    }
+</script>

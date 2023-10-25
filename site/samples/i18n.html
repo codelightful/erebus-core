@@ -1,0 +1,37 @@
+<div class="erb-doc-header">
+	<h1>I18n (Running example)</h1>
+    <a class="erb-return-link" href="#api/i18n">Return to the reference page</a>
+</div>
+
+<div class="erb-doc-content">
+    <div>Erebus.i18n.getLocale():</div>
+    <div id="divGetLocale"></div>
+</div>
+
+<div class="erb-doc-content">
+    <div>Erebus.i18n.getSystemLanguage():</div>
+    <div id="divGetSystemLanguage"></div>
+</div>
+
+<div class="erb-doc-content">
+    <div>Erebus.i18n.getLanguage():</div>
+    <div id="divGetLanguage"></div>
+</div>
+
+<div class="erb-doc-content">
+    <div>Erebus.i18n.getDateFormat():</div>
+    <div id="divGetDateFormat"></div>
+</div>
+
+<div class="erb-doc-content">
+    <div>Erebus.i18n.getDateTimeFormat():</div>
+    <div id="divGetDateTimeFormat"></div>
+</div>
+
+<script class="text/javascript">
+    Erebus.element('#divGetLocale').innerHTML = Erebus.i18n.getLocale();
+    Erebus.element('#divGetSystemLanguage').innerHTML = Erebus.i18n.getSystemLanguage();
+    Erebus.element('#divGetLanguage').innerHTML = Erebus.i18n.getLanguage();
+    Erebus.element('#divGetDateFormat').innerHTML = Erebus.i18n.getDateFormat();
+    Erebus.element('#divGetDateTimeFormat').innerHTML = Erebus.i18n.getDateTimeFormat();
+</script>

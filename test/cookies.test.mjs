@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 await import('./setup/dom.mjs');
-const Erebus = (await import('../src/erebus.mjs')).default;
+const Erebus = (await import('../src/index.mjs')).default;
 
 describe('Cookies', function() {
 	it('Contract', function() {

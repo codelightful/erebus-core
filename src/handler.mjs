@@ -1,5 +1,7 @@
+const $module = {};
+
 /** Invokes a function with exception management */
-function trigger(fnc, ...params) {
+$module.trigger = function(fnc, ...params) {
 	if (fnc === null || fnc === undefined) {
 		return;
 	} else if (typeof(fnc) !== 'function') {
@@ -10,10 +12,10 @@ function trigger(fnc, ...params) {
 	} catch (ex) {
 		throw new Error('erebus.handlers.trigger.function_error', ex);
 	}
-}
+};
 
 /** Invokes a function with exception management */
-function triggerAsPromise(fnc, ...params) {
+$module.triggerAsPromise = function(fnc, ...params) {
 	if (fnc === null || fnc === undefined) {
 		return Promise.resolve();
 	} else if (typeof(fnc) !== 'function') {
@@ -28,6 +30,6 @@ function triggerAsPromise(fnc, ...params) {
 			reject(ex);
 		}
 	});
-}
+};
 
-export default { trigger, triggerAsPromise };
+export default $module;
