@@ -1,44 +1,44 @@
-<div class="erb-doc-header">
+<div class="erbsite-doc-header">
 	<h1>Form</h1>
 	<h2>Utilities to handle forms and collect data from it</h2>
 </div>
 
-<div class="erb-doc-content">
+<div class="erbsite-doc-content">
 	<h3>Methods</h3>
 
 	<h4>collect</h4>
 	<p>Extracts all fields inside a HTMLElement container and collects its values into an object.</p>
 	<p>Each field to be collected should contain a model attribute with the name of the property that will hold the field value.</p>
 	<code>
-		&lt;div id=<span class="erb-literal">"formContainer"</span>&gt;
+		&lt;div id=<span class="erbsite-literal">"formContainer"</span>&gt;
 		</br>
-		&lt;input type=<span class="erb-literal">"text"</span> model=<span class="erb-literal">"age"</span>/&gt;
+		&lt;input type=<span class="erbsite-literal">"text"</span> model=<span class="erbsite-literal">"age"</span>/&gt;
 		</br>
 		&lt;/div&gt;
 		</br>
-		&lt;script type=<span class="erb-literal">"text/javascript"</span>&gt;
+		&lt;script type=<span class="erbsite-literal">"text/javascript"</span>&gt;
 		</br>
-		Erebus.form(<span class="erb-literal">'#formContainer'</span>).collect();
+		Erebus.form(<span class="erbsite-literal">'#formContainer'</span>).collect();
 		</br>
 		&lt;/script&gt;
-		<a class="erb-inner-action" href="#samples/form">See running example</a>
+		<a class="erbsite-inner-action" href="#samples/form">See running example</a>
 	</code>
 
 	<h4>fill</h4>
 	<p>Populates all the models fields inside a HTMLElement container with the values contained in an object instance.</p>
 	<p>Each field to be populated should contain a model attribute with the name of the property that will match the source object value.</p>
 	<code>
-		&lt;div id=<span class="erb-literal">"formContainer"</span>&gt;
+		&lt;div id=<span class="erbsite-literal">"formContainer"</span>&gt;
 		</br>
-		&lt;input type=<span class="erb-literal">"text"</span> model=<span class="erb-literal">"age"</span>/&gt;
+		&lt;input type=<span class="erbsite-literal">"text"</span> model=<span class="erbsite-literal">"age"</span>/&gt;
 		</br>
 		&lt;/div&gt;
 		</br>
-		&lt;script type=<span class="erb-literal">"text/javascript"</span>&gt;
+		&lt;script type=<span class="erbsite-literal">"text/javascript"</span>&gt;
 		</br>
-		Erebus.form(<span class="erb-literal">'#formContainer'</span>).fill({ age: 35 });
+		Erebus.form(<span class="erbsite-literal">'#formContainer'</span>).fill({ age: 35 });
 		</br>
 		&lt;/script&gt;
-		<a class="erb-inner-action" href="#samples/form">See running example</a>
+		<a class="erbsite-inner-action" href="#samples/form">See running example</a>
 	</code>
 </div>

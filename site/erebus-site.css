@@ -42,44 +42,44 @@ h2 {
 }
 
 /* Style for a menu entry */
-.erb-menu-entry {
+.erbsite-menu-entry {
 	padding-top: 2px;
 	padding-bottom: 2px;
 }
 
 /* Header separator inside a menu */
-.erb-menu-section {
+.erbsite-menu-section {
 	font-weight: bolder;
 	padding-top: 15px;
 }
 
 /* Header area of a documentation section */
-.erb-doc-header {
+.erbsite-doc-header {
 	border-bottom: solid 1px #acacac;
 	padding-bottom: 15px;
 }
-.erb-doc-header > h2 {
+.erbsite-doc-header > h2 {
 	font-size: 1.2rem;
 	font-weight: normal;
 	color: #515151;
 }
 
 /* Content area of a documentation section */
-.erb-doc-content {
+.erbsite-doc-content {
 	margin-top: 15px;
 	font-size: 1rem;
 }
-.erb-doc-content > h3 {
+.erbsite-doc-content > h3 {
 	font-size: 1.3rem;
 	margin-top: 20px;
 	margin-bottom: 0;
 }
-.erb-doc-content > h4 {
+.erbsite-doc-content > h4 {
 	font-size: 1.1rem;
 	margin-top: 15px;
 	margin-bottom: 0;
 }
-.erb-doc-content p {
+.erbsite-doc-content p {
 	margin-top: 0;
 	margin-bottom: 0;
 }
@@ -95,12 +95,12 @@ code {
 	font-family: 'Courier New', Courier, monospace;
 	background-color: #f3f3f3;
 }
-code .erb-literal {
+code .erbsite-literal {
 	color: rgb(175, 80, 25);
 }
 
 /* Button to execute action inside a code area */
-code .erb-inner-action {
+code .erbsite-inner-action {
 	position: absolute;
 	top: 10px;
 	right: 10px;
@@ -109,7 +109,7 @@ code .erb-inner-action {
 }
 
 /* Block of code with relevant information */
-.erb-doc-note {
+.erbsite-doc-note {
 	margin-top: 15px;
 	margin-bottom: 15px;
 	border: solid 1px #acacac;
@@ -117,46 +117,46 @@ code .erb-inner-action {
 }
 
 /* Link in a page that contains the option to return to a parent page */
-.erb-return-link {
+.erbsite-return-link {
 	font-size: 1rem;
 }
 
 /* Area containing one or more buttons */
-.erb-buttonbar {
+.erbsite-buttonbar {
 	padding-top: 15px;
 }
 
 /* Table with columns well defined to provide information about the examples */
-.erb-layout-table {
+.erbsite-layout-table {
 	border-spacing: 0;
 	border-collapse: collapse;
 }
-.erb-layout-table thead td {
+.erbsite-layout-table thead td {
 	background-color: #f3f3f3;
 	border-top: solid 1px #cecece;
 	border-bottom: solid 1px #cecece;
 }
-.erb-layout-table td {
+.erbsite-layout-table td {
 	padding: 5px 15px;
 	border-left: solid 1px #cecece;
 	border-right: solid 1px #cecece;
 }
-.erb-layout-table td:first-child {
+.erbsite-layout-table td:first-child {
 	border-left: none;
 }
-.erb-layout-table td:last-child {
+.erbsite-layout-table td:last-child {
 	border-right: none;
 }
 
 /* Area with well defined borders to create a visual separation of its content */
-.erb-bordered {
+.erbsite-ordered {
 	border: solid 1px #cecece;
 	padding: 10px;
 }
 
-.erb-doc-section {
+.erbsite-doc-section {
 	margin-top: 20px;
 }
-.erb-doc-section:first-child {
+.erbsite-doc-section:first-child {
 	margin-top: 0;
 }
