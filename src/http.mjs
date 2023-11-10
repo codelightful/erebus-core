@@ -75,7 +75,8 @@ $scope.parsers['json'] = function (response) {
 
 /** Internal method to obtain the proper parser according to the content type or null if no transformations are required */
 function getResponseParser(headers) {
-	if (headers && headers['content-type'] === 'application/json') {
+	const contentType = (headers && typeof(headers['content-type']) === 'string') ? headers['content-type'] : null;
+	if (contentType && contentType.startsWith('application/json')) {
 		return $scope.parsers['json'];
 	}
 	return null;
@@ -104,8 +105,15 @@ function executeRequest(method, url, options) {
 		const request = createXmlHttp();
 		request.onreadystatechange = function () {
 			if (request.readyState == 4 || request.readyState === 'complete') {
-				if (request.status !== 200) {
-					const err = new Error('http_error[' + request.status + ']');
+				if (request.status === 0) {
+					const err = new Error('erebus.http.connection_refused');
+					err.code = 'http';
+					err.status = 'connection_error';
+					err.response = null;
+					reject(err);
+				} else if (request.status !== 200) {
+					const err = new Error('erebus.http.error.' + request.status);
+					err.code = 'http';
 					err.status = request.status;
 					err.response = request.responseText;
 					reject(err);

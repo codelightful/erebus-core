@@ -3,10 +3,10 @@ import utils from './utils.mjs';
 const $module = {};
 
 /**
- * Sets a specific cookie
+ * Sets the value for a cookie entry
  * @param name Name of the cookie to set
- * @param value Value to set
- * @param timespan Timspan to maintain the cookie in seconds
+ * @param value Value to set. Omit or set to null to clean the cookie
+ * @param timespan Timespan to maintain the cookie (in seconds)
  */
 $module.set = function (name, value, timespan) {
 	if (!name) {
@@ -15,8 +15,13 @@ $module.set = function (name, value, timespan) {
 	if (typeof (timespan) !== 'number') {
 		timespan = 3600;
 	}
-	const expireDate = new Date();
-	expireDate.setTime(expireDate.getTime() + (timespan * 1000));
+	var expireDate = new Date();
+	if (value === null || value === undefined) {
+		value = '';
+		expireDate.setTime(expireDate.getTime() - 1000);
+	} else {
+		expireDate.setTime(expireDate.getTime() + (timespan * 1000));
+	}
 	var cookie = utils.trim(name) + '=' + value + '; expires=' + expireDate.toGMTString() + '; path=/';
 	document.cookie = cookie;
 };
