@@ -10,7 +10,7 @@ const $module = {};
  */
 $module.set = function (name, value, timespan) {
 	if (!name) {
-		throw Error('erebus.cookies.set.null_cookie_name');
+		throw new Error('erebus.cookies.set.null_cookie_name');
 	}
 	if (typeof (timespan) !== 'number') {
 		timespan = 3600;

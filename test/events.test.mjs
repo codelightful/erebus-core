@@ -60,7 +60,7 @@ describe('Events', function() {
 	it('animate with ErebusElement', async function() {
 		const target = document.createElement('div');
 		target.className = 'erb-previous';
-		const element = Erebus.element(target);
+		const element = Erebus.$(target);
 		await Erebus.events.animate(element, 'erb-test');
 		assert.strictEqual(target.className, 'erb-previous erb-test');
 	});

@@ -2,25 +2,25 @@ import { strict as assert } from 'assert';
 await import('./setup/dom.mjs');
 const Erebus = (await import('../src/index.mjs')).default;
 
-describe('Erebus.element - Creation', function() {
+describe('Erebus.$ - Creation', function() {
 	it('Contract', function() {
-		assert.ok(Erebus.element);
+		assert.ok(Erebus.$);
 	});
 
 	it('HTML', function() {
-		const element = Erebus.element('<div>Hello Erebus!</div>');
-		assert.ok(element);
+		const erebusElement = Erebus.$('<div>Hello Erebus!</div>');
+		assert.ok(erebusElement);
 	});
 
 	it('Existing ID', function() {
 		document.body.innerHTML = '<div id="erebus-content"></div>';
-		const element = Erebus.element('#erebus-content');
-		assert.ok(element);
+		const erebusElement = Erebus.$('#erebus-content');
+		assert.ok(erebusElement);
 	});
 
 	it('Non existing ID', function() {
 		assert.throws(() => {
-			Erebus.element('#some-id');
+			Erebus.$('#some-id');
 		}, {
 			message: /erebus.element.unknown_element_id\[#some-id\]/
 		});
@@ -28,13 +28,13 @@ describe('Erebus.element - Creation', function() {
 
 	it('Existing CSS Selector', function() {
 		document.body.innerHTML = '<div class="erebus-class"></div>';
-		const element = Erebus.element('.erebus-class');
-		assert.ok(element);
+		const erebusElement = Erebus.$('.erebus-class');
+		assert.ok(erebusElement);
 	});
 
 	it('Non existing Selector', function() {
 		assert.throws(() => {
-			Erebus.element('.some-selector');
+			Erebus.$('.some-selector');
 		}, {
 			message: /erebus.element.unknown_selector\[.some-selector\]/
 		});
@@ -43,23 +43,23 @@ describe('Erebus.element - Creation', function() {
 	it('HTMLElement', function() {
 		document.body.innerHTML = '<div id="element-identifier"></div>';
 		const source = document.getElementById('element-identifier');
-		const element = Erebus.element(source);
-		assert.ok(element);
+		const erebusElement = Erebus.$(source);
+		assert.ok(erebusElement);
 	});
 
 	it('Body (string)', function() {
-		const element = Erebus.element('body');
-		assert.ok(element);
+		const erebusElement = Erebus.$('body');
+		assert.ok(erebusElement);
 	});
 
 	it('Body (object)', function() {
-		const element = Erebus.element(document.body);
-		assert.ok(element);
+		const erebusElement = Erebus.$(document.body);
+		assert.ok(erebusElement);
 	});
 
 	it('Body should be a singleton', function() {
-		const one = Erebus.element(document.body);
-		const two = Erebus.element('body');
+		const one = Erebus.$(document.body);
+		const two = Erebus.$('body');
 		assert.ok(one === two);
 	});
 });

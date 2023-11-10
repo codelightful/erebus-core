@@ -142,7 +142,7 @@ class RouterEngine {
 	 */
 	register(path, handler) {
 		if (!handler || typeof(handler) !== 'function') {
-			throw Error(`erebus.router.invalid_handler[${path}]`);
+			throw new Error(`erebus.router.invalid_handler[${path}]`);
 		}
 		this.#routes.push(new Route(path, handler));
 		return this;

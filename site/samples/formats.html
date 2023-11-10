@@ -9,7 +9,7 @@
 <script class="text/javascript">
     function renderFormatter(inputValue, formatterCode, formatContainer, deformatContainer) {
         const formatter = Erebus.formats(formatterCode);
-        const table = Erebus.element('<table class="erbsite-layout-table" style="width: 100%; margin-bottom: 30px;"></table>');
+        const table = Erebus.$('<table class="erbsite-layout-table" style="width: 100%; margin-bottom: 30px;"></table>');
         table.appendChild('<thead><tr><td></td><td style="width: 30%;">Valid Value</td><td style="width: 30%;">Invalid Value<br/>(abcd)</td></tr></thead>');
         const validFormatted = formatter.format(inputValue);
         var invalid = formatter.format('xxx');
@@ -17,7 +17,7 @@
         const validDeformatted = formatter.deformat(validFormatted);
         invalid = formatter.deformat('xxx');
         table.appendChild(`<tr><td>Erebus.formats(${formatterCode}).deformat()</td><td><div>${validDeformatted}</div><div>(${typeof(validDeformatted)})</div></td><td>${invalid}</td></tr>`);
-        Erebus.element('#divSampleContent').appendChild(table);
+        Erebus.$('#divSampleContent').appendChild(table);
     }
 
     renderFormatter(1234567, 'integer', '#divFormatInteger', '#divDeformatInteger');

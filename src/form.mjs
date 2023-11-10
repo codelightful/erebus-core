@@ -246,6 +246,11 @@ class FormWrapper {
 		return output;
 	}
 
+	/**
+	 * Populates the fields inside the HTMLElement defined as the form container and set its values according to
+	 * the corresponding attribute values from the model defined for each field
+	 * @param {*} values Object containing the source to consume the model values to set on each field
+	 */
 	fill(values) {
 		if (!values) {
 			this.clean();

@@ -7,17 +7,17 @@
 	<h3>Creation</h3>
 	You can create a new element representing a specific block of HTML code
 	<div class="erbsite-code-snip">
-		var element = Erebus.element(<span class="erbsite-literal">'&lt;div&&gt;This is a test&lt;/div&gt;'</span>);
+		var element = Erebus.$(<span class="erbsite-literal">'&lt;div&&gt;This is a test&lt;/div&gt;'</span>);
 	</div>
 
 	The creation method refer an existing DOM element using a CSS selector
 	<div class="erbsite-code-snip">
-		var element = Erebus.element(<span class="erbsite-literal">'#my-element-id'</span>);
+		var element = Erebus.$(<span class="erbsite-literal">'#my-element-id'</span>);
 	</div>
 
 	Also, you can pass an existing HTMLElement
 	<div class="erbsite-code-snip">
-		var element = Erebus.element(document.body);
+		var element = Erebus.$(document.body);
 	</div>
 
 	<div class="erbsite-doc-note">
@@ -32,7 +32,7 @@
 	<p>Removes all the content inside the DOM elements represented by the instance.</p>
 	<p>Returns a reference to the element.</p>
 	<div class="erbsite-code-snip">
-		Erebus.element('.cells').clear();
+		Erebus.$('.cells').clear();
 	</div>
 
 	<h4>Content</h4>
@@ -42,13 +42,13 @@
 	<p>The content can be a literal with plain text or HTML.</p>
 	Example: This code snipplet sets a plain text content inside all the elements with the "cell" CSS class
 	<div class="erbsite-code-snip">
-		Erebus.element(<span class="erbsite-literal">'.cells'</span>).content(<span class="erbsite-literal">'Some plain content'</span>);
+		Erebus.$(<span class="erbsite-literal">'.cells'</span>).content(<span class="erbsite-literal">'Some plain content'</span>);
 	</div>
 
 	<p>The content can be a HTMLElement recently created or extracted from the DOM.</p>
 	Example: This code snipplet sets the existing DOM element with the id "my-div" inside the element
 	<div class="erbsite-code-snip">
 		<div>var sourceElement = document.getElementById(<span class="erbsite-literal">'mydiv'</span>)</div>
-		<div>Erebus.element(<span class="erbsite-literal">'.cells'</span>).content(sourceElement);</div>
+		<div>Erebus.$(<span class="erbsite-literal">'.cells'</span>).content(sourceElement);</div>
 	</div>
 </div>

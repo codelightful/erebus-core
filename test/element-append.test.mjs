@@ -2,38 +2,38 @@ import { strict as assert } from 'assert';
 await import('./setup/dom.mjs');
 const Erebus = (await import('../src/index.mjs')).default;
 
-describe('Erebus.element - appendChild', function() {
+describe('Erebus.$ - appendChild', function() {
 	it('Contract', function() {
-		const element = Erebus.element('<div>Hello Erebus!</div>');
-		assert.ok(element);
-		assert.ok(element.appendChild);
+		const erebusElement = Erebus.$('<div>Hello Erebus!</div>');
+		assert.ok(erebusElement);
+		assert.ok(erebusElement.appendChild);
 	});
 
 	it('Plain string', function() {
 		document.body.innerHTML = 'Hello';
-		const element = Erebus.element('body');
-		element.appendChild(' Erebus!');
+		const erebusElement = Erebus.$('body');
+		erebusElement.appendChild(' Erebus!');
 		assert.strictEqual(document.body.innerHTML, 'Hello Erebus!');
 	});
 
 	it('HTML content', function() {
 		document.body.innerHTML = 'Hello';
-		const element = Erebus.element('body');
-		element.appendChild('<span>Erebus HTML Content!</span>');
+		const erebusElement = Erebus.$('body');
+		erebusElement.appendChild('<span>Erebus HTML Content!</span>');
 		assert.strictEqual(document.body.innerHTML, 'Hello<span>Erebus HTML Content!</span>');
 	});
 
 	it('HTMLElement', function() {
 		document.body.innerHTML = '<span id="inner-element">Erebus HTMLElement!</span>Hello';
-		const element = Erebus.element('body');
-		element.appendChild(document.getElementById('inner-element'));
+		const erebusElement = Erebus.$('body');
+		erebusElement.appendChild(document.getElementById('inner-element'));
 		assert.strictEqual(document.body.innerHTML, 'Hello<span id="inner-element">Erebus HTMLElement!</span>');
 	});
 
 	it('ErebusElement', function() {
 		document.body.innerHTML = 'Hello';
-		const element = Erebus.element('body');
-		element.appendChild(Erebus.element('<span>ErebusElement!</span>'));
+		const erebusElement = Erebus.$('body');
+		erebusElement.appendChild(Erebus.$('<span>ErebusElement!</span>'));
 		assert.strictEqual(document.body.innerHTML, 'Hello<span>ErebusElement!</span>');
 	});
 });

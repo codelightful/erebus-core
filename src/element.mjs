@@ -62,22 +62,22 @@ function parseHTML(content) {
 	const results = [];
 	const holder = $scope.domParser.parseFromString(content, 'text/xml');
 	for (let ndx=0; ndx < holder.childNodes.length; ndx++) {
-		const element = xmlToHtml(holder.childNodes[ndx]);
-		results.push(element);
+		const htmlElement = xmlToHtml(holder.childNodes[ndx]);
+		results.push(htmlElement);
 	}
 	return results;
 }
 
 /**
  * Removes all the child nodes from a specific element
- * @param {HTMLElement} Element to remove the childs from it
+ * @param {HTMLElement} target Element to remove the childs from it
  */
-function removeAllChild(element) {
-	if (!element || !(element instanceof HTMLElement)) {
+function removeAllChild(target) {
+	if (!target || !(target instanceof HTMLElement)) {
 		return;
 	}
-	while (element.firstChild) {
-		element.removeChild(element.firstChild);
+	while (target.firstChild) {
+		target.removeChild(target.firstChild);
 	}
 }
 
@@ -164,17 +164,17 @@ class ErebusElement {
 	// Allows to determine if the element is visible or not
 	#hidden;
 
-	constructor(element) {
+	constructor(target) {
 		this.#hidden = false;
-		if (element instanceof HTMLElement) {
-			this.#wrappedElement = element;
+		if (target instanceof HTMLElement) {
+			this.#wrappedElement = target;
 		} else {
-			throw new Error('erebus.element.invalid_element[' + typeof (element) + ']');
+			throw new Error('erebus.element.invalid_element[' + typeof (target) + ']');
 		}
 	}
 
-	/** Allows to obtain the reference to the wrapped element */
-	get element() {
+	/** Allows to obtain the reference to the source wrapped element */
+	get source() {
 		return this.#wrappedElement;
 	}
 
@@ -263,7 +263,7 @@ class ErebusElement {
 		} else if (value instanceof HTMLElement) {
 			this.#wrappedElement.appendChild(value);
 		} else if (value instanceof ErebusElement) {
-			this.#wrappedElement.appendChild(value.element);
+			this.#wrappedElement.appendChild(value.source);
 		}
 		return this;
 	}
@@ -295,6 +295,16 @@ class ErebusElement {
 	 */
 	once(eventName, listener) {
 		return this.addEventListener(eventName, listener, { capture: false, once: true });
+	}
+
+	/**
+	 * Registers a handler to be invoked when the element is clicked
+	 * @param {function} handler Function to invoke when the event is triggered
+	 * @param {object} options Optional object with the options to set the listener (see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener)
+	 * @returns Current element instance to write fluid expressions
+	 */
+	onClick(handler, options) {
+		return this.addEventListener('click', handler, options);
 	}
 
 	/** Allows to determine if the element is hidden or not */

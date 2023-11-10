@@ -7,21 +7,21 @@
 	<h3>Creation</h3>
 	You can create a new element representing a specific block of HTML code
 	<code>
-		var element = Erebus.element(<span class="erbsite-literal">'&lt;div&&gt;This is a test&lt;/div&gt;'</span>);
+		var element = Erebus.$(<span class="erbsite-literal">'&lt;div&&gt;This is a test&lt;/div&gt;'</span>);
 		<a class="erbsite-inner-action" href="#samples/element">See running example</a>
 	</code>
 
 	The creation method refer an existing DOM element using a CSS selector
 	<code>
-		var elementFromId = Erebus.element(<span class="erbsite-literal">'#myElement'</span>);
+		var elementFromId = Erebus.$(<span class="erbsite-literal">'#myElement'</span>);
 		<br/>
-		var elementFromClass = Erebus.element(<span class="erbsite-literal">'.myclass'</span>);
+		var elementFromClass = Erebus.$(<span class="erbsite-literal">'.myclass'</span>);
 		<a class="erbsite-inner-action" href="#samples/element">See running example</a>
 	</code>
 
 	Also, you can pass an existing HTMLElement
 	<code>
-		var element = Erebus.element(document.body);
+		var element = Erebus.$(document.body);
 		<a class="erbsite-inner-action" href="#samples/element">See running example</a>
 	</code>
 
@@ -37,7 +37,7 @@
 	<p>Removes all the content inside the DOM elements represented by the instance.</p>
 	<p>Returns a reference to the element.</p>
 	<code>
-		Erebus.element(<span class="erbsite-literal">'#myElement'</span>).clear();
+		Erebus.$(<span class="erbsite-literal">'#myElement'</span>).clear();
 	</code>
 
 	<h4>Content</h4>
@@ -47,7 +47,7 @@
 	<p>The content can be a literal with plain text or HTML.</p>
 	Example: This code snipplet sets a plain text content inside all the elements with the "cell" CSS class
 	<code>
-		Erebus.element(<span class="erbsite-literal">'#myElement'</span>).content(<span class="erbsite-literal">'Some plain content'</span>);
+		Erebus.$(<span class="erbsite-literal">'#myElement'</span>).content(<span class="erbsite-literal">'Some plain content'</span>);
 	</code>
 
 	<p>The content can be a HTMLElement recently created or extracted from the DOM.</p>
@@ -55,6 +55,6 @@
 	<code>
 		var sourceElement = document.getElementById(<span class="erbsite-literal">'mydiv'</span>);
 		<br/>
-		Erebus.element(<span class="erbsite-literal">'#myElement'</span>).content(sourceElement);
+		Erebus.$(<span class="erbsite-literal">'#myElement'</span>).content(sourceElement);
 	</code>
 </div>

@@ -17,7 +17,7 @@ function createXmlHttp() {
 		try {
 			return new ActiveXObject('Microsoft.XMLHTTP');
 		} catch (ex) {
-			throw Error('erebus.http.xmlhttp_error');
+			throw new Error('erebus.http.xmlhttp_error');
 		}
 	}
 }
