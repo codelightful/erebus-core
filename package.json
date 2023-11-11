@@ -1,6 +1,6 @@
 {
   "name": "erebus-core",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Base web library",
   "repository": "https://github.com/codelightful/erebus-core",
   "browser": "./dist/erebus-core.min.js",
@@ -36,7 +36,7 @@
     "@web/dev-server": "^0.1.37",
     "c8": "^7.13.0",
     "eslint": "^8.37.0",
-    "jsdom": "^21.1.1",
+    "jsdom": "^22.1.0",
     "mocha": "^10.2.0",
     "npm-run-all": "^4.1.5",
     "rollup": "^3.20.2",

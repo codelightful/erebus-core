@@ -1,3 +1,7 @@
+import {JSDOM} from 'jsdom';
+import fs from 'fs';
+const erebustDistribution = fs.readFileSync('./dist/erebus-core.min.js');
+
 const originalConsole = {};
 originalConsole.log = console.log;
 originalConsole.debug = console.debug;
@@ -52,4 +56,12 @@ export function runWithMockedConsole(testImpl) {
 		console.warn = originalConsole.warn;
 		console.error = originalConsole.error;
 	}
+}
+
+export function mockDOM() {
+	const window = (new JSDOM('<!DOCTYPE html>', {runScripts: 'dangerously'})).window;
+	const scriptEntry = window.document.createElement('script');
+	scriptEntry.textContent = erebustDistribution;
+	window.document.body.appendChild(scriptEntry);
+	return window;
 }

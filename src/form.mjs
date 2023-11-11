@@ -1,4 +1,4 @@
-import format from './formats.mjs';
+import formats from './formats.mjs';
 import validator from './validator.mjs';
 import utils from './utils.mjs';
 import handler from './handler.mjs';
@@ -36,7 +36,7 @@ function getValidationFields(containerId) {
  */
 function getFieldFormatter(fieldInstance) {
 	const formatCode = fieldInstance.getAttribute('format');
-	return format(formatCode);
+	return formats(formatCode);
 }
 
 /**
@@ -171,43 +171,33 @@ function getEffectiveFieldValidations(fieldInstance) {
 }
 
 /**
- * Collects the result from a field and execute any post-process required to include the
- * result into the generic fail collector.
- * @param {*} fieldInstance Instance of the field for which the result was produced
- * @param {*} fieldFailCollector Collector with the failures received from the field validation
- * @param {*} failCollector General collector
- */
-function processFieldResult(fieldInstance, fieldFailCollector, failCollector) {
-	if (fieldFailCollector.length > 0 && failCollector && Array.isArray(failCollector)) {
-		failCollector.push({ field: fieldInstance, failure: fieldFailCollector });
-	}
-}
-
-/**
  * Implements the validation of a specific form field
  * @param {HTMLElement} fieldInstance Reference to the field to be validated
- * @param {Array} failCollector Optional array to collect the detail of the failures or null to avoid collecting it
- * @param {Funcion} onFieldValidation Function to be invoked with the result of the validation
+ * @param {*} collector Optional array to collect the details of the validation failures, or function to be invoked with the result of each validation
  * @returns Boolean value to determine if the field passed the validations (true) or not (false)
  */
-function validateField(fieldInstance, failCollector, onFieldValidation) {
+function validateField(fieldInstance, collector) {
 	const fieldValidations = getEffectiveFieldValidations(fieldInstance);
 	if (!fieldValidations) {
 		return true;
 	}
 	var result = true;
 	const fieldValue = getFieldValue(fieldInstance);
-	const fieldFormat = fieldInstance.getAttribute('format');
 	const fieldFailCollector = [];
 	for (var vdx=0; vdx < fieldValidations.length; vdx++) {
 		const validation = utils.trim(fieldValidations[vdx]);
 		if (validation === '') {
 			continue;
 		}
-		result = validator.validate(validation, fieldValue, fieldFormat, fieldFailCollector) && result;
+		result = validator.validate(validation, fieldValue, fieldFailCollector) && result;
 	}
-	handler.trigger(onFieldValidation, fieldInstance, result, fieldFailCollector);
-	processFieldResult(fieldInstance, fieldFailCollector, failCollector);
+	if (collector) {
+		if (typeof(collector) === 'function') {
+			handler.trigger(collector, fieldInstance, result, fieldFailCollector);
+		} else if (fieldFailCollector.length > 0 && Array.isArray(collector)) {
+			collector.push({ field: fieldInstance, failures: fieldFailCollector });
+		}
+	}
 	return result;
 }
 
@@ -276,15 +266,14 @@ class FormWrapper {
 
 	/**
 	 * Validates the fields in the form container with applicable validations
-	 * @param {*} failCollector Optional array to collect the details of the validation failures or null if does not want to be collected
-	 * @param {*} onFieldValidation Optional function to receive the result of each field validation
-	 * @returns
+	 * @param {*} collector Optional array to collect the details of the validation failures, or function to be invoked with the result of each validation
+	 * @returns Boolean value with the validation result
 	 */
-	validate(failCollector, onFieldValidation) {
+	validate(collector) {
 		var result = true;
 		const fieldList = getValidationFields(this.#containerId);
 		for (var fdx = 0; fdx < fieldList.length; fdx++) {
-			result = validateField(fieldList[fdx], failCollector, onFieldValidation) && result;
+			result = validateField(fieldList[fdx], collector) && result;
 		}
 		return result;
 	}

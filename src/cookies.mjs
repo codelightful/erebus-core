@@ -22,7 +22,7 @@ $module.set = function (name, value, timespan) {
 	} else {
 		expireDate.setTime(expireDate.getTime() + (timespan * 1000));
 	}
-	var cookie = utils.trim(name) + '=' + value + '; expires=' + expireDate.toGMTString() + '; path=/';
+	var cookie = utils.trim(name) + '=' + value + ';expires=' + expireDate.toGMTString() + ';path=/';
 	document.cookie = cookie;
 };
 

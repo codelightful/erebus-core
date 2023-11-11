@@ -1,5 +1,5 @@
+/* eslint-disable no-useless-escape */
 import utils from './utils.mjs';
-import formats from './formats.mjs';
 
 const $scope = {};
 
@@ -11,6 +11,26 @@ $scope.validators['required'] = function(value) {
 	return (value !== null && value !== '' && typeof(value) !== 'undefined');
 };
 
+/** Validator to make sure a valid email address was provided */
+$scope.validators['email'] = function(value) {
+	// Since this validation is not implicetely requiring a value, then any empty value is considered valid
+	if (value === null || value === undefined || (typeof(value) === 'string' && value.length === 0)) {
+		return true;
+	}
+	var regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+	return typeof(value) === 'string' && regex.test(value);
+};
+
+/** Validator to make sure a valid URL was provided */
+$scope.validators['url'] = function(value) {
+	// Since this validation is not implicetely requiring a value, then any empty value is considered valid
+	if (utils.isNonValue(value)) {
+		return true;
+	}
+	var regex = /((http(s)?):\/\/){1}(www|\w{2,256})(\.{1}\w{2,256})+(\/{1}\w{2,256})*(\??\w{1,255}={1}\w{1,255}(&{1}\w{1,255}=\w{1,255})*)?/g;
+	return typeof(value) === 'string' && regex.test(value);
+};
+
 /**
  * Internal utility method to execute a validation logic that is based on a single value parameter
  * @param {*} value Value to evaluate
@@ -19,30 +39,68 @@ $scope.validators['required'] = function(value) {
  * @param {Function} evaluator Function with the validation logic
  * @returns Boolean value with the validation result
  */
-function processParametrizedValidator(value, params, valueType, evaluator) {
-	if (valueType && utils.trim(valueType) !== '') {
-		params = formats(valueType).deformat(params);
-	} else if (typeof(value) === 'string' && typeof(params) === 'string') {
-		value = parseInt(value);
-		params = parseInt(params);
-		if (isNaN(value) || isNaN(params)) {
-			console.warn('erebus.validator.range.unparseable_string_values', { value: value, range: params });
-			return false;
+function processParametrizedValidator(value, params, evaluator) {
+	if (params === null || params === undefined) {
+		throw new Error('erebus.validator.range.no_threshold');
+	}
+	var effectiveParam = params;
+	if (typeof(params) === 'string') {
+		if (params.indexOf('.') > 0) {
+			effectiveParam = parseFloat(params);
+		} else {
+			effectiveParam = parseInt(params);
+		}
+		if (isNaN(effectiveParam)) {
+			const errorCode = 'erebus.validator.range.unparseable';
+			console.error(`${errorCode}[${typeof(params)}|${params}]`);
+			throw new Error(errorCode);
 		}
 	}
-	return evaluator(value, params);
+	return evaluator(value, effectiveParam);
 }
 
 /** Validator to make sure an integer value is not less than the provided value */
-$scope.validators['min'] = function(value, params, valueType) {
-	return processParametrizedValidator(value, params, valueType, function(value, range) {
+$scope.validators['min'] = function(value, params) {
+	// A null, an undefined value or an empty string cannot be evaluated against the threshold
+	if (utils.isNonValue(value)) {
+		return true;
+	}
+	if (params === '@now') {
+		params = new Date();
+	} else if (params === '@today') {
+		params = new Date();
+		params.setHours(0);
+		params.setMinutes(0);
+		params.setSeconds(0);
+		params.setMilliseconds(0);
+	}
+	return processParametrizedValidator(value, params, function(value, range) {
+		if (typeof(value) === 'string') {
+			return value.length >= range;
+		}
 		return value >= range;
 	});
 };
 
 /** Validator to make sure an integer value is not greater than the provided value */
-$scope.validators['max'] = function(value, params, valueType) {
-	return processParametrizedValidator(value, params, valueType, function(value, range) {
+$scope.validators['max'] = function(value, params) {
+	// A null, an undefined value or an empty string cannot be evaluated against the threshold
+	if (utils.isNonValue(value)) {
+		return true;
+	}
+	if (params === '@now') {
+		params = new Date();
+	} else if (params === '@today') {
+		params = new Date();
+		params.setHours(23);
+		params.setMinutes(59);
+		params.setSeconds(59);
+		params.setMilliseconds(999);
+	}
+	return processParametrizedValidator(value, params, function(value, range) {
+		if (typeof(value) === 'string') {
+			return value.length <= range;
+		}
 		return value <= range;
 	});
 };
@@ -79,15 +137,13 @@ function parseValidator(validation) {
  * 		that identifies the validation to execute and optional parameters to provide context to the validation instruction.
  * 		The parameters are applicable depending on the needs of the validation.  The tag and the parameters are separated
  * 		by an equals symbol (=).
- * @param {*} value Value to validate using the validation specification
- * @param {string} valueType Optional string to describe the type of value provided.  It allows the method to do a more
- * 		accurate validations when type definition is relevant.  If no value is provided, then default rules will be applicable
- * 		in the execution of the validation.  The possible types are the same defined for Erebus formatters.
+ * @param {*} value Value to validate using the validation specification. It should be provided using the valid type to
+ * 		execute the validation.
  * @param {*} failCollector Array to collect the details about the possible validation failures or null if there is no
  * 		need to collect the failures.
  * @returns Boolean value with the result of the validation
  */
-$module.validate = function(validation, value, valueType, failCollector) {
+$module.validate = function(validation, value, failCollector) {
 	if (!validation) {
 		return true;
 	}
@@ -96,7 +152,7 @@ $module.validate = function(validation, value, valueType, failCollector) {
 		console.warn(`erebus.validator.invalid_validation[${validation}]`);
 		return true;
 	}
-	if (!parsed.validator(value, parsed.tag.params, valueType)) {
+	if (!parsed.validator(value, parsed.tag.params)) {
 		if (failCollector && Array.isArray(failCollector)) {
 			failCollector.push(parsed.tag);
 		}

@@ -13,8 +13,8 @@ describe('Forms - Validations', function() {
 		const result = Erebus.form('formContainer').validate(failCollector);
 		assert.strictEqual(result, false);
 		assert.deepStrictEqual(failCollector, [ 
-			{ field: document.getElementById('fldOne'), failure: [{ name: 'required' }] },
-			{ field: document.getElementById('fldTwo'), failure: [{ name: 'required' }] }
+			{ field: document.getElementById('fldOne'), failures: [{ name: 'required' }] },
+			{ field: document.getElementById('fldTwo'), failures: [{ name: 'required' }] }
 		]);
 	});
 
@@ -28,7 +28,7 @@ describe('Forms - Validations', function() {
 		{ dataType: 'integer', threshold: '10', invalid: '9', valid: '10' },
 		{ dataType: 'decimal', threshold: '10', invalid: '9.99', valid: '10.00' },
 		{ dataType: 'money', threshold: '10000', invalid: '9,999.99', valid: '10,000.00' },
-		{ dataType: 'undefined', threshold: '100', invalid: '99', valid: '100' }
+		{ dataType: 'undefined', threshold: '9', invalid: 'some', valid: 'something' }
 	];
 	minScenarios.forEach(scenario => {
 		const formatValue = (scenario.dataType === 'undefined') ? '' : scenario.dataType;
@@ -39,7 +39,7 @@ describe('Forms - Validations', function() {
 			const result = Erebus.form('formContainer').validate(failCollector);
 			assert.strictEqual(result, false);
 			assert.deepStrictEqual(failCollector, [ 
-				{ field: document.getElementById('fldInteger'), failure: [{ name: 'min', params: scenario.threshold }] }
+				{ field: document.getElementById('fldInteger'), failures: [{ name: 'min', params: scenario.threshold }] }
 			]);
 		});
 
@@ -56,7 +56,7 @@ describe('Forms - Validations', function() {
 		{ dataType: 'integer', threshold: '10', invalid: '11', valid: '10' },
 		{ dataType: 'decimal', threshold: '10', invalid: '10.50', valid: '10.00' },
 		{ dataType: 'money', threshold: '10000', invalid: '10,000.50', valid: '10,000.00' },
-		{ dataType: 'undefined', threshold: '100', invalid: '101', valid: '100' }
+		{ dataType: 'undefined', threshold: '9', invalid: 'something else', valid: 'something' }
 	];
 	maxScenarios.forEach(scenario => {
 		const formatValue = (scenario.dataType === 'undefined') ? '' : scenario.dataType;
@@ -67,7 +67,7 @@ describe('Forms - Validations', function() {
 			const result = Erebus.form('formContainer').validate(failCollector);
 			assert.strictEqual(result, false);
 			assert.deepStrictEqual(failCollector, [ 
-				{ field: document.getElementById('fldInteger'), failure: [{ name: 'max', params: scenario.threshold }] }
+				{ field: document.getElementById('fldInteger'), failures: [{ name: 'max', params: scenario.threshold }] }
 			]);
 		});
 

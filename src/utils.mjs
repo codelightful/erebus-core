@@ -20,4 +20,12 @@ $module.trim = function (value) {
 	return value.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
 };
 
+/** Determines if a specific value is null, undefined or an empty string */
+$module.isNonValue = function(value, trim) {
+	if (trim === true && value && typeof(value) === 'string') {
+		value = $module.trim(value);
+	}
+	return value === null || value === undefined || (typeof(value) === 'string' && value.length === 0);
+};
+
 export default $module;
