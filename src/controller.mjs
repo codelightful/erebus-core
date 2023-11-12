@@ -54,7 +54,7 @@ const $module = function(specs) {
 		}
 		if (typeof(specs.handler) === 'function') {
 			try {
-				specs.handler();
+				specs.handler(params);
 			} catch (ex) {
 				const errorCode = 'erebus.controller.handler_error';
 				console.error(errorCode, ex);
