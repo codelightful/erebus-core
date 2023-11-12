@@ -408,11 +408,14 @@ class ErebusElement {
 	 * @param {string} url String of the source URL used to load content into the current instance
 	 */
 	async load(url) {
+		if (!url) {
+			this.content('<div class="erb-badge erb-error">erebus.element.load.no_url</div>');
+		}
 		try {
 			const response = await http.get(url);
 			this.content(response);
 		} catch (err) {
-			var errorBlock = createErrorContent('erebus.element.load_error', err);
+			var errorBlock = createErrorContent('erebus.element.load.error', err);
 			this.content(errorBlock);
 		}
 	}

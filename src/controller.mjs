@@ -1,4 +1,6 @@
 import $ from './element.mjs';
+import handler from './handler.mjs';
+import utils from './utils.mjs';
 
 const $scope = {};
 // Contains the default target area to load the content.  It can be a string with the selector for the DOM element
@@ -12,7 +14,8 @@ $scope.defaultTarget = null;
  * has been loaded.
  * @param {*} specs Object with the specifications to create the routing controller. It is composed by
  *          the following attributes:
- *          - url: String with the fragment to load
+ *          - fragment: String with the URL of the fragment to load, function returning the URL of the fragment to load
+ * 				or promise with the content to load.  This parameter is mandatory.
  *          - target: String with the selector of the DOM element that will receive the content or reference to its HTMLElement.
  *              If it not provided, then the default target area will be used.  If no default target area is defined, then the
  *              document body will be used.  The function setDefaultTarget can be used to define the default target.
@@ -20,15 +23,35 @@ $scope.defaultTarget = null;
  * @returns Function that can be used to configure a route
  */
 const $module = function(specs) {
-	return async function() {
-		var target = specs.target;
-		if (!target) {
-			target = $scope.defaultTarget;
+	var effectiveTarget = specs.target;
+	if (!effectiveTarget) {
+		effectiveTarget = $scope.defaultTarget;
+	}
+	if (!effectiveTarget) {
+		effectiveTarget = document.body;
+	}
+	if (!specs) {
+		return function() {
+			$(effectiveTarget).content('<div class="erb-badge erb-error">erebus.controller.error.no_specs</div>');
+		};
+	} else if (!specs.fragment) {
+		return function() {
+			$(effectiveTarget).content('<div class="erb-badge erb-error">erebus.controller.error.no_fragment</div>');
+		};
+	}
+	return async function(params) {
+		var effectiveFragment = specs.fragment;
+		if (typeof(effectiveFragment) === 'function') {
+			effectiveFragment = handler.trigger(effectiveFragment, params);
 		}
-		if (!target) {
-			target = document.body;
+		if (utils.isPromise(effectiveFragment)) {
+			const content = await effectiveFragment;
+			$(effectiveTarget).content(content);
+		} else if (typeof(effectiveFragment) === 'string') {
+			await $(effectiveTarget).load(effectiveFragment);
+		} else {
+			$(effectiveTarget).content('<div class="erb-badge erb-error">erebus.controller.invalid_fragment</div>');
 		}
-		await $(target).load(specs.url);
 		if (typeof(specs.handler) === 'function') {
 			try {
 				specs.handler();
