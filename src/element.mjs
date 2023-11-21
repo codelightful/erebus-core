@@ -205,14 +205,16 @@ class ErebusElement {
 		if (typeof (value) === 'string') {
 			this.#wrappedElement.innerHTML = value;
 			// If javascript content was added as part of the content, then processes it as a script tag
-			const innerScripts = this.#wrappedElement.querySelectorAll('script');
-			for (var ndx=0; ndx < innerScripts.length; ndx++) {
-				const scriptObj = innerScripts[ndx];
-				scriptObj.parentNode.removeChild(scriptObj);
-				var newScript = document.createElement('script');
-				newScript.textContent = scriptObj.textContent;
-				this.#wrappedElement.appendChild(newScript);
-			}
+			setTimeout(() => {
+				const innerScripts = this.#wrappedElement.querySelectorAll('script');
+				for (var ndx=0; ndx < innerScripts.length; ndx++) {
+					const scriptObj = innerScripts[ndx];
+					scriptObj.parentNode.removeChild(scriptObj);
+					var newScript = document.createElement('script');
+					newScript.textContent = scriptObj.textContent;
+					this.#wrappedElement.appendChild(newScript);
+				}
+			}, 0);
 		} else if (value instanceof HTMLElement) {
 			this.#wrappedElement.appendChild(value);
 		} else if (value instanceof ErebusElement) {

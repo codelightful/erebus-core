@@ -8,6 +8,17 @@ const $scope = {};
 // is used to define this value
 $scope.defaultTarget = null;
 
+/** Internal method to determine the target used in the execution of a controller */
+function getEffectiveTarget(specs) {
+	if (specs && !utils.isNonValue(specs.target)) {
+		return specs.target;
+	}
+	if (!utils.isNonValue($scope.defaultTarget)) {
+		return $scope.defaultTarget;
+	}
+	return document.body;
+}
+
 /**
  * Function that allows to define a handler to configure a routing specification that
  * loads content from a HTML fragment and executes a JavaScript action after the content
@@ -23,23 +34,15 @@ $scope.defaultTarget = null;
  * @returns Function that can be used to configure a route
  */
 const $module = function(specs) {
-	var effectiveTarget = specs.target;
-	if (!effectiveTarget) {
-		effectiveTarget = $scope.defaultTarget;
-	}
-	if (!effectiveTarget) {
-		effectiveTarget = document.body;
-	}
-	if (!specs) {
-		return function() {
-			$(effectiveTarget).content('<div class="erb-badge erb-error">erebus.controller.error.no_specs</div>');
-		};
-	} else if (!specs.fragment) {
-		return function() {
-			$(effectiveTarget).content('<div class="erb-badge erb-error">erebus.controller.error.no_fragment</div>');
-		};
-	}
 	return async function(params) {
+		var effectiveTarget = getEffectiveTarget(specs);
+		if (!specs) {
+			$(effectiveTarget).content('<div class="erb-badge erb-error">erebus.controller.error.no_specs</div>');
+			return;
+		} else if (!specs.fragment) {
+			$(effectiveTarget).content('<div class="erb-badge erb-error">erebus.controller.error.no_fragment</div>');
+			return;
+		}
 		var effectiveFragment = specs.fragment;
 		if (typeof(effectiveFragment) === 'function') {
 			effectiveFragment = handler.trigger(effectiveFragment, params);
