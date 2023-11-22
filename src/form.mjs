@@ -173,7 +173,10 @@ function getEffectiveFieldValidations(fieldInstance) {
 /**
  * Implements the validation of a specific form field
  * @param {HTMLElement} fieldInstance Reference to the field to be validated
- * @param {*} collector Optional array to collect the details of the validation failures, or function to be invoked with the result of each validation
+ * @param {*} collector Optional array to collect the details of the validation failures, or function
+ * 			to be invoked with the result of each validation. The  function will receive the reference
+ * 			to the field, a boolean with the result of the validation, and an array with the list
+ * 			of failed validations
  * @returns Boolean value to determine if the field passed the validations (true) or not (false)
  */
 function validateField(fieldInstance, collector) {
@@ -266,7 +269,10 @@ class FormWrapper {
 
 	/**
 	 * Validates the fields in the form container with applicable validations
-	 * @param {*} collector Optional array to collect the details of the validation failures, or function to be invoked with the result of each validation
+	 * @param {*} collector Optional array to collect the details of the validation failures, or function
+ * 			to be invoked with the result of each validation. The  function will receive the reference
+ * 			to the field, a boolean with the result of the validation, and an array with the list
+ * 			of failed validations
 	 * @returns Boolean value with the validation result
 	 */
 	validate(collector) {

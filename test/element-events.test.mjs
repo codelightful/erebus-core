@@ -57,7 +57,7 @@ describe('Erebus.$ - events', function() {
 		assert.strictEqual(holder.triggered, 1);
 	});
 
-	it('Test click with valid handler', function() {
+	it('Test onClick with valid handler', function() {
 		const holder = { triggered: 0 };
 		const htmlElement = document.createElement('div');
 		const erebusElement = Erebus.$(htmlElement);
@@ -68,5 +68,28 @@ describe('Erebus.$ - events', function() {
 		htmlElement.click();
 		htmlElement.click();
 		assert.strictEqual(holder.triggered, 3);
+	});
+
+	it('Test onFocus/onBlur with valid handler', function() {
+		const holder = { focusCount: 0, blurredCount: 0 };
+		const htmlElement = document.createElement('input');
+		document.body.appendChild(htmlElement);
+		const anotherElement = document.createElement('input');
+		document.body.appendChild(anotherElement);
+		const erebusElement = Erebus.$(htmlElement);
+		erebusElement.onFocus(function() {
+			holder.focusCount++;
+		});
+		erebusElement.onBlur(function() {
+			holder.blurredCount++;
+		});
+		anotherElement.focus();
+		htmlElement.focus();
+		anotherElement.focus();
+		htmlElement.focus();
+		anotherElement.focus();
+		htmlElement.focus();
+		assert.strictEqual(holder.focusCount, 3);
+		assert.strictEqual(holder.blurredCount, 2);
 	});
 });

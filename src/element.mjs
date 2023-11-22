@@ -309,6 +309,26 @@ class ErebusElement {
 		return this.addEventListener('click', handler, options);
 	}
 
+	/**
+	 * Registers a handler to be invoked when the element get focus
+	 * @param {function} handler Function to invoke when the event is triggered
+	 * @param {object} options Optional object with the options to set the listener (see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener)
+	 * @returns Current element instance to write fluid expressions
+	 */
+	onFocus(handler, options) {
+		return this.addEventListener('focus', handler, options);
+	}
+
+	/**
+	 * Registers a handler to be invoked when the element lose focus
+	 * @param {function} handler Function to invoke when the event is triggered
+	 * @param {object} options Optional object with the options to set the listener (see https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener)
+	 * @returns Current element instance to write fluid expressions
+	 */
+	onBlur(handler, options) {
+		return this.addEventListener('blur', handler, options);
+	}
+
 	/** Allows to determine if the element is hidden or not */
 	get isHidden() {
 		return this.#hidden;
