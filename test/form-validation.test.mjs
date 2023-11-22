@@ -79,4 +79,85 @@ describe('Forms - Validations', function() {
 			assert.deepStrictEqual(failCollector, []);
 		});
 	});
+
+	it('Test validatefield with no parameters', function() {
+		const result = Erebus.form.validateField();
+		assert.strictEqual(result, false);
+	});
+
+	it('Test validatefield with null field parameter', function() {
+		const result = Erebus.form.validateField(null);
+		assert.strictEqual(result, false);
+	});
+
+	it('Test validatefield with INPUT field without validations', function() {
+		const field = document.createElement('input');
+		const result = Erebus.form.validateField(field);
+		assert.strictEqual(result, true);
+	});
+
+	it('Test validatefield with INPUT field with failed validation and no collector', function() {
+		const field = document.createElement('input');
+		field.setAttribute('validation', 'required');
+		const result = Erebus.form.validateField(field);
+		assert.strictEqual(result, false);
+	});
+
+	it('Test validatefield with INPUT field with failed validation and a collector function', function() {
+		const field = document.createElement('input');
+		field.setAttribute('validation', 'required');
+		const collectedData = {};
+		const result = Erebus.form.validateField(field, function(field, result, failures) {
+			collectedData.field = field;
+			collectedData.result = result;
+			collectedData.failures = failures;
+		});
+		assert.strictEqual(result, false);
+		assert.strictEqual(collectedData.field, field, 'The collected field does not match the expected value');
+		assert.strictEqual(collectedData.result, false, 'The collected result does not match the expected value');
+		assert.deepStrictEqual(collectedData.failures, [{name: 'required'}], 'The collected failures does not match the expected value');
+	});
+
+	it('Test validatefield with INPUT field with failed validation and a collector array', function() {
+		const field = document.createElement('input');
+		field.setAttribute('validation', 'required');
+		const collector = [];
+		const result = Erebus.form.validateField(field, collector);
+		assert.strictEqual(result, false);
+		assert.deepStrictEqual(collector, [{ field: field, failures: [{name: 'required'}] }], 'The collector does not match the expected value');
+	});
+
+	it('Test validatefield with INPUT field with successful validation and no collector', function() {
+		const field = document.createElement('input');
+		field.setAttribute('validation', 'required');
+		field.setAttribute('value', 'somevalue');
+		const result = Erebus.form.validateField(field);
+		assert.strictEqual(result, true);
+	});
+
+	it('Test validatefield with INPUT field with successful validation and a collector function', function() {
+		const field = document.createElement('input');
+		field.setAttribute('validation', 'required');
+		field.setAttribute('value', 'somevalue');
+		const collectedData = {};
+		const result = Erebus.form.validateField(field, function(field, result, failures) {
+			collectedData.field = field;
+			collectedData.result = result;
+			collectedData.failures = failures;
+		});
+		assert.strictEqual(result, true);
+		assert.strictEqual(collectedData.field, field, 'The collected field does not match the expected value');
+		assert.strictEqual(collectedData.result, true, 'The collected result does not match the expected value');
+		assert.deepStrictEqual(collectedData.failures, [], 'The collected failures does not match the expected value');
+	});
+
+	it('Test validatefield with INPUT field with successful validation and a collector array', function() {
+		const field = document.createElement('input');
+		field.setAttribute('validation', 'required');
+		field.setAttribute('value', 'somevalue');
+		const collector = [];
+		const result = Erebus.form.validateField(field, collector);
+		assert.strictEqual(result, true);
+		assert.deepStrictEqual(collector, [], 'The collector does not match the expected value');
+	});
 });

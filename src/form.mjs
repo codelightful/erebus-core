@@ -150,6 +150,9 @@ function collectField(fieldInstance, collector) {
  * @returns Boolean value to determine if can be validated or not
  */
 function canValidateField(fieldInstance) {
+	if (!fieldInstance) {
+		return false;
+	}
 	const tagName = fieldInstance.tagName;
 	return tagName === 'INPUT' || tagName === 'SELECT';
 }
@@ -164,7 +167,7 @@ function getEffectiveFieldValidations(fieldInstance) {
 		return null;
 	}
 	var fieldValidations = fieldInstance.getAttribute('validation');
-	if (fieldValidations === '') {
+	if (!fieldValidations || fieldValidations === '') {
 		return null;
 	}
 	return fieldValidations.split(';');
@@ -180,6 +183,10 @@ function getEffectiveFieldValidations(fieldInstance) {
  * @returns Boolean value to determine if the field passed the validations (true) or not (false)
  */
 function validateField(fieldInstance, collector) {
+	if (!fieldInstance) {
+		console.warn('erebus.form.validate_field.invalid_field');
+		return false;
+	}
 	const fieldValidations = getEffectiveFieldValidations(fieldInstance);
 	if (!fieldValidations) {
 		return true;
@@ -288,5 +295,7 @@ class FormWrapper {
 const $module = function (formId) {
 	return new FormWrapper(formId);
 };
+
+$module.validateField = validateField;
 
 export default $module;
