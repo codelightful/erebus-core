@@ -55,4 +55,38 @@ describe('Handler', function () {
 		});
 		assert.strictEqual(result, 'abcd');
 	});
+
+	it('Handle error with null', function () {
+		var  thrownError = null;
+		try {
+			Erebus.handler.handleError(null);
+		} catch(ex) {
+			thrownError = ex;
+		}
+		assert.strictEqual(thrownError, null);
+	});
+
+	it('Handle error without code', function () {
+		var  thrownError = null;
+		const errorObject = new Error('Something Hapenned');
+		try {
+			Erebus.handler.handleError(errorObject);
+		} catch(ex) {
+			thrownError = ex;
+		}
+		assert.ok(thrownError);
+		assert.strictEqual(thrownError.message, 'Something Hapenned');
+	});
+
+	it('Handle error with code', function () {
+		var  thrownError = null;
+		const errorObject = new Error('Something Hapenned');
+		try {
+			Erebus.handler.handleError(errorObject, 'erebus.test.handler.some_error_code');
+		} catch(ex) {
+			thrownError = ex;
+		}
+		assert.ok(thrownError);
+		assert.ok(thrownError.message.startsWith('erebus.test.handler.some_error_code'));
+	});
 });

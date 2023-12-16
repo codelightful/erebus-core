@@ -1,3 +1,5 @@
+import random from './random.mjs';
+
 const $module = {};
 
 /** Invokes a function with exception management */
@@ -10,7 +12,7 @@ $module.trigger = function(fnc, ...params) {
 	try {
 		return fnc.call(null, ...params);
 	} catch (ex) {
-		throw new Error('erebus.handlers.trigger.function_error', ex);
+		$module.handleError(ex, 'erebus.handlers.trigger.function_error');
 	}
 };
 
@@ -30,6 +32,26 @@ $module.triggerAsPromise = function(fnc, ...params) {
 			reject(ex);
 		}
 	});
+};
+
+/**
+ * Handles the ocurrence of an error/exception in a standard way
+ * @param {*} err Error or exception captured
+ * @param {*} code String with the code to describe the error
+ */
+$module.handleError = function(err, code) {
+	// TODO: implement a way to print the error in the UI in a standard way
+	if (!err) {
+		return;
+	}
+	if (code) {
+		const guid = random.guid();
+		const errorCode = `${code}[${guid}]`;
+		console.error(errorCode, err);
+		throw new Error(errorCode);
+	}
+	console.log(err);
+	throw err;
 };
 
 export default $module;
