@@ -151,7 +151,7 @@ function integerFormatter(value) {
 
 /** Method to parse a formatted value containing an integer representation coming from the UI */
 function integerDeformatter(value) {
-	if (typeof(value) === 'undefined' || value === null) {
+	if (typeof(value) === 'undefined' || value === null || value === '') {
 		return null;
 	} else if (typeof(value) !== 'string') {
 		return value;
@@ -181,7 +181,7 @@ function decimalFormatter(value) {
 
 /** Method to parse a formatted value containing a decimal representation coming from the UI */
 function decimalDeformatter(value) {
-	if (typeof(value) === 'undefined' || value === null) {
+	if (typeof(value) === 'undefined' || value === null || value === '') {
 		return null;
 	} else if (typeof(value) !== 'string') {
 		return value;
@@ -215,7 +215,7 @@ function moneyFormatter(value) {
 
 /** Method to parse a formatted value containing an numeric representation coming from the UI with money format */
 function moneyDeformatter(value) {
-	if (typeof(value) === 'undefined' || value === null) {
+	if (typeof(value) === 'undefined' || value === null || value === '') {
 		return null;
 	} else if (typeof(value) !== 'string') {
 		return value;
@@ -249,7 +249,7 @@ function dateFormatter(value) {
 
 /** Method to parse a formatted value containing an date representation coming from the UI */
 function dateDeformatter(value) {
-	if (typeof(value) === 'undefined' || value === null) {
+	if (typeof(value) === 'undefined' || value === null || value === '') {
 		return null;
 	} else if (typeof(value) !== 'string') {
 		return value;
@@ -290,7 +290,7 @@ function dateTimeFormatter(value) {
 
 /** Method to parse a formatted value containing an date/time representation coming from the UI */
 function dateTimeDeformatter(value) {
-	if (typeof(value) === 'undefined' || value === null) {
+	if (typeof(value) === 'undefined' || value === null || value === '') {
 		return null;
 	} else if (typeof(value) !== 'string') {
 		return value;
