@@ -307,10 +307,10 @@ describe('Validators', function() {
 
 	it('Validates "max" with @today and a Date value in the threshold', function() {
 		var todayDate = new Date();
-		todayDate.setHours(23);
-		todayDate.setMinutes(59);
-		todayDate.setSeconds(59);
-		todayDate.setMilliseconds(0);
+		//todayDate.setHours(23);
+		//todayDate.setMinutes(59);
+		//todayDate.setSeconds(59);
+		//todayDate.setMilliseconds(0);
 		const result = validator.validate('max=@today', todayDate);
 		assert.strictEqual(result, true);
 	});

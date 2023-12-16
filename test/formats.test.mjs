@@ -86,4 +86,34 @@ describe('Formats', function() {
 		assert.strictEqual(deformatted.getMinutes(), 35);
 		assert.strictEqual(deformatted.getSeconds(), 20);
 	});
+
+	it('Test isLikeISODate with empty string', function() {
+		const result = Erebus.formats.isLikeISODate('');
+		assert.strictEqual(result, false);
+	});
+
+	it('Test isLikeISODate with valid date value', function() {
+		const result = Erebus.formats.isLikeISODate('2023-01-01');
+		assert.strictEqual(result, true);
+	});
+
+	it('Test isLikeISODate with invalid value', function() {
+		const result = Erebus.formats.isLikeISODate('XXXX-01-01');
+		assert.strictEqual(result, false);
+	});
+
+	it('Test isLikeISODateTime with empty string', function() {
+		const result = Erebus.formats.isLikeISODateTime('');
+		assert.strictEqual(result, false);
+	});
+
+	it('Test isLikeISODateTime with valid datetime/notimezone value', function() {
+		const result = Erebus.formats.isLikeISODateTime('2023-01-01T00:00:00');
+		assert.strictEqual(result, true);
+	});
+
+	it('Test isLikeISODateTime with date only value', function() {
+		const result = Erebus.formats.isLikeISODateTime('2023-01-01');
+		assert.strictEqual(result, false);
+	});
 });

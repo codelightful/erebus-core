@@ -329,4 +329,31 @@ const $module = function(formatName) {
 	return $scope.formatters[formatName];
 };
 
+/**
+ * Determines if a specific string looks like an ISO date
+ */
+$module.isLikeISODate = function(value, acceptTime) {
+	if (!value || typeof(value) !== 'string') {
+		return false;
+	}
+	var regex;
+	if (acceptTime === false) {
+		regex = /^\d{4}-\d{2}-\d{2}$/gm;
+	} else {
+		regex = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2})?$/gm;
+	}
+	return regex.test(value);
+};
+
+/**
+ * Determines if a specific string looks like an ISO datetime
+ */
+$module.isLikeISODateTime = function(value) {
+	if (!value || typeof(value) !== 'string') {
+		return false;
+	}
+	var regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/gm;
+	return regex.test(value);
+};
+
 export default $module;

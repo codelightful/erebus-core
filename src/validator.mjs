@@ -1,5 +1,7 @@
 /* eslint-disable no-useless-escape */
 import utils from './utils.mjs';
+import handler from './handler.mjs';
+import formats from './formats.mjs';
 
 const $scope = {};
 
@@ -43,20 +45,29 @@ function processParametrizedValidator(value, params, evaluator) {
 	if (params === null || params === undefined) {
 		throw new Error('erebus.validator.range.no_threshold');
 	}
+	var paramTag = null;
 	var effectiveParam = params;
+	if (typeof(params) === 'object' && typeof(params.tag) === 'string') {
+		paramTag = params.tag;
+		effectiveParam = params.value;
+	}
 	if (typeof(params) === 'string') {
-		if (params.indexOf('.') > 0) {
-			effectiveParam = parseFloat(params);
+		if (formats.isLikeISODate(params)) {
+			effectiveParam = params;
 		} else {
-			effectiveParam = parseInt(params);
-		}
-		if (isNaN(effectiveParam)) {
-			const errorCode = 'erebus.validator.range.unparseable';
-			console.error(`${errorCode}[${typeof(params)}|${params}]`);
-			throw new Error(errorCode);
+			if (params.indexOf('.') > 0) {
+				effectiveParam = parseFloat(params);
+			} else {
+				effectiveParam = parseInt(params);
+			}
+			if (isNaN(effectiveParam)) {
+				const errorCode = 'erebus.validator.range.unparseable';
+				console.error(`${errorCode}[${typeof(params)}|${params}]`);
+				throw new Error(errorCode);
+			}
 		}
 	}
-	return evaluator(value, effectiveParam);
+	return evaluator(value, effectiveParam, paramTag);
 }
 
 /** Validator to make sure an integer value is not less than the provided value */
@@ -65,18 +76,14 @@ $scope.validators['min'] = function(value, params) {
 	if (utils.isNonValue(value)) {
 		return true;
 	}
-	if (params === '@now') {
-		params = new Date();
-	} else if (params === '@today') {
-		params = new Date();
-		params.setHours(0);
-		params.setMinutes(0);
-		params.setSeconds(0);
-		params.setMilliseconds(0);
-	}
-	return processParametrizedValidator(value, params, function(value, range) {
+	return processParametrizedValidator(value, params, function(value, range, paramTag) {
 		if (typeof(value) === 'string') {
 			return value.length >= range;
+		}
+		if (range instanceof Date && paramTag == '@today') {
+			range.setHours(0);
+			range.setMinutes(0);
+			range.setSeconds(0);
 		}
 		return value >= range;
 	});
@@ -88,24 +95,52 @@ $scope.validators['max'] = function(value, params) {
 	if (utils.isNonValue(value)) {
 		return true;
 	}
-	if (params === '@now') {
-		params = new Date();
-	} else if (params === '@today') {
-		params = new Date();
-		params.setHours(23);
-		params.setMinutes(59);
-		params.setSeconds(59);
-		params.setMilliseconds(999);
-	}
-	return processParametrizedValidator(value, params, function(value, range) {
+	return processParametrizedValidator(value, params, function(value, range, paramTag) {
 		if (typeof(value) === 'string') {
 			return value.length <= range;
+		}
+		if (range instanceof Date && paramTag == '@today') {
+			range.setHours(23);
+			range.setMinutes(59);
+			range.setSeconds(59);
 		}
 		return value <= range;
 	});
 };
 
 const $module = {};
+
+/** Parses the parameter contained in a validation expression */
+function parseValidatorParam(params) {
+	if (params === '@now') {
+		params = { tag: params };
+		params.value = new Date();
+	} else if (params === '@today') {
+		params = { tag: params };
+		params.value = new Date();
+		params.value.setHours(0);
+		params.value.setMinutes(0);
+		params.value.setSeconds(0);
+		params.value.setMilliseconds(0);
+	} else if (typeof(params) === 'string' && params.startsWith('@date')) {
+		const parameterList = params.match(/@date\(([^)]+)\)/);
+		params = { tag: '@date' };
+		if (parameterList && Array.isArray(parameterList)) {
+			var dateValue = parameterList[1];
+			if (dateValue.length === 10) {
+				dateValue = dateValue + 'T00:00:00';
+			}
+			try {
+				params.value = new Date(dateValue);
+			} catch (ex) {
+				handler.handleError(ex, `erebus.validator.param_error[${dateValue}]`);
+			}
+		} else {
+			params.value = null;
+		}
+	}
+	return params;
+}
 
 /**
  * Parses a validation specification and extract the tag, the parameters and the validator for it
@@ -122,7 +157,8 @@ function parseValidator(validation) {
 		result = { tag: { name: utils.trim(validation) } };
 	} else {
 		result = { tag: { name: utils.trim(validation.substring(0, paramIndex)) } };
-		result.tag.params = utils.trim(validation.substring(paramIndex + 1));
+		var params = utils.trim(validation.substring(paramIndex + 1));
+		result.tag.params = parseValidatorParam(params);
 	}
 	result.validator = $scope.validators[result.tag.name];
 	if (!result.validator) {
